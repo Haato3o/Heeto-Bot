@@ -15,9 +15,13 @@ class Bot(commands.Bot):
         Logger.Log(f"{self.user.name} is now connected to Discord!")
         #Sets bot activity
         Activity = discord.Game(name=self.statusMessage, start=datetime.now())
-        await self.change_presence(status=Status.online, activity=Activity)
+        await self.change_presence(status=discord.Status.online, activity=Activity)
 
     async def on_message(self, message: discord.Message):
         # Ignore other bot messages
         if (message.author.bot):
             return
+
+        # Process command
+        await self.process_commands(message)
+    

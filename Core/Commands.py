@@ -19,7 +19,3 @@ class Commands(commands.Cog):
                 self.bot.load_extension(cog)
             except Exception as err:
                 Logger.Log(err, Logger.ERROR)
-
-    @commands.command(pass_context=True)
-    async def test(self, ctx):
-        await ctx.send("hi")
