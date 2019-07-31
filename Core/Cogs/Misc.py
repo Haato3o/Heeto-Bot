@@ -1,15 +1,14 @@
 from discord.ext import commands
-import discord
 from Core.Logger import Logger
 
-class SKWiki(commands.Cog):
+class Misc(commands.Cog):
     def __init__(self, bot):
-        Logger.Log("SKWiki loaded!")
+        Logger.Log("Miscellaneous loaded!")
         self.bot:commands.Bot = bot
-
+    
     @commands.command(pass_context=True)
-    async def check(self, ctx):
-        await ctx.send("hello!")
+    async def echo(self, ctx, *, message: str):
+        await ctx.send(message)
 
 def setup(bot):
-    bot.add_cog(SKWiki(bot))
+    bot.add_cog(Misc(bot))

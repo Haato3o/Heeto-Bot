@@ -1,5 +1,11 @@
+# System stuff
 .env
 
+#Vscode
 .vscode
+
+# Python
 __pycache__
+
+# Heeto pot boi
 TODO.txt

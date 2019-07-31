@@ -1,0 +1,5 @@
+# Requirements for Heeto pot
+discord.py==1.1.1
+beautifulsoup4==4.6.3
+python3-mal
+requests==2.18.4
