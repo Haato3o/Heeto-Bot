@@ -1,6 +1,7 @@
 from discord.ext import commands
 import discord
 from Core.Logger import Logger
+from Libs.utils.bot_utils import BotUtils
 import datetime
 
 class Admin(commands.Cog):
@@ -20,14 +21,7 @@ class Admin(commands.Cog):
     
     def isOwner(self, user_id:int):
         return user_id in self.Owners
-    
-    def formatHelpText(self):
-        helpDescription = []
-        for key in self.AdminCommands:
-            formattedLine = f"__**{self.bot.command_prefix}{key}__ -> {self.AdminCommands.get(key)}"
-            helpDescription.append(formattedLine)
-        return "\n".join(helpDescription)
-
+        
     @commands.group(pass_context=True, hidden=True)
     async def admin(self, ctx:commands.Context):
         if ctx.invoked_subcommand == None:
@@ -40,7 +34,7 @@ class Admin(commands.Cog):
                 )
                 helpAdmin.add_field(
                     name = "**Admin**",
-                    value = self.formatHelpText()
+                    value = BotUtils.formatCommandsDict(self.bot.command_prefix, self.AdminCommands)
                 )
                 await ctx.send(embed=helpAdmin)
             else:
