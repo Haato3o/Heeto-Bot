@@ -45,8 +45,15 @@ class Misc(commands.Cog):
     
     @commands.command(pass_context=True)
     async def heart(self, ctx:commands.Context, background:str='0', foreground:str='1'):
-        # TODO: Finish this command
-        return
-
+        heartTemplate = "000000000\n001101100\n011111110\n011111110\n011111110\n001111100\n000111000\n000010000\n000000000"
+        heartBackground = ["🖤", "💚", "💜"]
+        heartForeground = ["❤", "💛", "💙"]
+        choosenBackground = random.choice(heartBackground) if background == '0' else background
+        choosenForeground = random.choice(heartForeground) if foreground == '1' else foreground
+        if BotUtils.isEmoji(choosenBackground) and BotUtils.isEmoji(choosenForeground):
+            await ctx.send(heartTemplate.replace('0', choosenBackground).replace('1', choosenForeground))
+        else:
+            await ctx.send("This command only works with default emoticons :(")
+        
 def setup(bot):
     bot.add_cog(Misc(bot))
