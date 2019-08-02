@@ -11,17 +11,34 @@ class Misc(commands.Cog):
             "echo** *<message>*": "Makes the bot repeat the <message>.",
             "emojos** *<message>*": "Turns the <message> into an emoji copypasta",
             "roll** *<max>*" : "Rolls the dice from 0 to <max> (Default = 20)",
-            "heart** *<background>* *<foreground>*" : "Creates a heart using emotes"
+            "heart** *<background>* *<foreground>*" : "Creates a heart using emotes",
+            "spam** *<users>*": "Mentions <users> 3 times (up to 10 people)"
         }
-        
+    
+    @commands.command(pass_context=True)
+    @commands.cooldown(rate=1, per=4.0, type=commands.BucketType.channel)
+    async def spam(self, ctx: commands.Context):
+        message: commands.Context.message = ctx.message
+        if ctx.message.mention_everyone:
+            await ctx.send("You can't spam everyone")
+            return
+        if len(message.mentions) > 0:
+            if len(message.mentions) > 10:
+                await ctx.send(f"{ctx.author.mentions} you can only spam up to 10 people at once!")
+                return
+            for spam in range(3):
+                await ctx.send(f"{', '.join([mentioned_user.mention for mentioned_user in message.mentions])} Wake up!")
+        else:
+            await ctx.send(f"{ctx.author.mention} You need to mention someone!")
+
     @commands.command(pass_context=True)
     @commands.cooldown(rate=2, per=3.0, type=commands.BucketType.channel)
-    async def echo(self, ctx:commands.Context, *, message: str):
+    async def echo(self, ctx: commands.Context, *, message: str):
         await ctx.send(message)
     
     @commands.command(pass_context=True)
     @commands.cooldown(rate=2, per=5.0, type=commands.BucketType.guild)
-    async def emojos(self, ctx:commands.Context, *, message: str):
+    async def emojos(self, ctx: commands.Context, *, message: str):
         listEmojos = ["😂", "🤔", "😐", "😍", "😴", "😡", "👌", "👊", "👀", "👅", "🍆", "💦"]
         finalResult = [random.choice(listEmojos)]
         messageWords = message.split(" ")
@@ -30,7 +47,7 @@ class Misc(commands.Cog):
         await ctx.send("".join(finalResult[0:1999]))
 
     @commands.command(pass_context=True)
-    async def roll(self, ctx:commands.Context, *, max_number: str = '20'):
+    async def roll(self, ctx: commands.Context, *, max_number: str = '20'):
         try:
             max_number = int(max_number)
             if max_number < 1:

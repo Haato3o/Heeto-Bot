@@ -12,7 +12,8 @@ class Commands(commands.Cog):
         Cogs = [
             "Core.Cogs.SKWiki",
             "Core.Cogs.Misc",
-            "Core.Cogs.Admin"
+            "Core.Cogs.Admin",
+            "Core.Cogs.Tera"
         ]
         for cog in Cogs:
             try:
