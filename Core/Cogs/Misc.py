@@ -14,7 +14,6 @@ class Misc(commands.Cog):
             "heart** *<background>* *<foreground>*" : "Creates a heart using emotes"
         }
         
-
     @commands.command(pass_context=True)
     @commands.cooldown(rate=2, per=3.0, type=commands.BucketType.channel)
     async def echo(self, ctx:commands.Context, *, message: str):

@@ -1,7 +1,7 @@
 class BotUtils():
 
     @staticmethod
-    def formatCommandsDict(bot_prefix: str, commands_dict: dict):
+    def formatCommandsDict(bot_prefix: str, commands_dict: dict) -> str:
         '''
             Formats dict into a readable block of text for the help embed command
             :param bot_prefix: The bot prefix
@@ -15,10 +15,11 @@ class BotUtils():
         return "\n".join(helpDescription)
 
     @staticmethod
-    def isEmoji(char: str):
+    def isEmoji(char: str) -> bool:
         '''
             Checks if character is an emoji based on it's unicode.
-            :param emote:
+            :param char: Char to check if it's an emoji
+            :return: True if char is an emoji, false if not
         '''
         char = char[0]
         # Normal emoticons
