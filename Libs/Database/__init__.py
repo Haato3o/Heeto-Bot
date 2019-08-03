@@ -1,1 +1,1 @@
-from .Connection import HeetoDatabase
+from .Connection import Database
