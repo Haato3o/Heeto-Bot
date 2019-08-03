@@ -10,7 +10,7 @@ STATUS_MESSAGE = os.getenv('STATUS_MESSAGE')
 # Import core libs
 from Core.Bot import Bot
 
-__version__ = "v1.0.0"
+__version__ = "v1.2.2"
 
 
 Heeto = Bot(PREFIX, STATUS_MESSAGE)

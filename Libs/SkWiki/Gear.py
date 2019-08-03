@@ -1,3 +1,8 @@
+'''
+    Library Heeto bot uses to query items to Spiral Knights's wiki
+    Author: Haato
+'''
+
 from requests import request, Response
 from bs4 import BeautifulSoup
 

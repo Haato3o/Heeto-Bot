@@ -1,3 +1,8 @@
+'''
+    Library used by Heeto bot to get tera servers status
+    Author: Haato
+'''
+
 from requests import request
 from bs4 import BeautifulSoup
 
