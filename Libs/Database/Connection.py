@@ -1,5 +1,5 @@
 '''
-    Library used by Heeto bot to access it's PostgreSQL database
+    Library used by Heeto bot to access its PostgreSQL database
     Author: Haato
 '''
 
@@ -10,7 +10,14 @@ from Core.Logger import Logger
 
 class Database():
     def __init__(self, username: str, password: str, host: str, port: str, db_name: str):
-
+        '''
+            Creates a PostgreSQL database connection
+            :param username: Database username
+            :param password: Database password
+            :param host: Database host
+            :param port: Database port
+            :param db_name: Database name
+        '''
         # Database info
         self.username = username
         self.password = password
@@ -28,21 +35,47 @@ class Database():
             Logger.Log(f"You must connect to the database first!")
             return False
 
-    def AddToTable(self, tableName: str, values: tuple):
+    def GetFromTable(self, tableName: str, comparation: str):
+        query = f'''
+            SELECT * FROM {tableName} WHERE {comparation};
+        '''
+        if self.isConnected():
+            try:
+                self.Cursor.execute(query)
+                return self.Cursor.fetchall()
+            except Exception as err:
+                Logger.Log(err, Logger.ERROR)
+
+    def CommitCommand(self, command: str):
+        '''
+            Executes command
+            :param command: PostgreSQL command to execute and commit
+            :return: True if the command was executed, False if not
+        '''
+        if self.isConnected():
+            try:
+                self.Cursor.execute(command)
+                self.Connection.commit()
+                return True
+            except Exception as e:
+                Logger.Log(err, Logger.ERROR)
+                return False
+
+    def AddToTable(self, tableName: str, **kwargs):
         '''
             Adds values to a table
             :param tableName: Table name
-            :param values: Tuple with values to add
+            :param kwargs: Table column values
             :return: True if values were added, false if not
         '''
         query = f'''
-            INSERT INTO {tableName} VALUES {values};
+            INSERT INTO {tableName} VALUES {tuple(kwargs.values())};
         '''
         if self.isConnected():
             try:
                 self.Cursor.execute(query)
                 self.Connection.commit()
-                Logger.Log(f"Added {values} to {tableName}")
+                Logger.Log(f"Added {tuple(kwargs.values())} to {tableName}")
                 return True
             except Exception as err:
                 Logger.Log(err, Logger.ERROR)
