@@ -35,9 +35,23 @@ class Database():
             Logger.Log(f"You must connect to the database first!")
             return False
 
-    def GetFromTable(self, tableName: str, comparation: str):
+    def DeleteFromTable(self, tableName: str, comp: str):
         query = f'''
-            SELECT * FROM {tableName} WHERE {comparation};
+            DELETE FROM {tableName} WHERE {comp};
+        '''
+        if self.isConnected():
+            try:
+                self.Cursor.execute(query)
+                self.Connection.commit()
+                return True
+            except Exception as err:
+                Logger.Log(err, Logger.ERROR)
+                self.Cursor.execute("rollback;")
+                return False
+
+    def GetFromTable(self, tableName: str, comp: str):
+        query = f'''
+            SELECT * FROM {tableName} WHERE {comp};
         '''
         if self.isConnected():
             try:
@@ -45,6 +59,7 @@ class Database():
                 return self.Cursor.fetchall()
             except Exception as err:
                 Logger.Log(err, Logger.ERROR)
+                self.Cursor.execute("rollback;")
 
     def CommitCommand(self, command: str):
         '''
@@ -59,6 +74,7 @@ class Database():
                 return True
             except Exception as e:
                 Logger.Log(err, Logger.ERROR)
+                self.Cursor.execute("rollback;")
                 return False
 
     def AddToTable(self, tableName: str, **kwargs):
@@ -79,6 +95,7 @@ class Database():
                 return True
             except Exception as err:
                 Logger.Log(err, Logger.ERROR)
+                self.Cursor.execute("rollback;")
                 return False
 
     def DeleteTable(self, tableName):
@@ -98,6 +115,7 @@ class Database():
                 return True
             except Exception as err:
                 Logger.Log(err, Logger.ERROR)
+                self.Cursor.execute("rollback;")
                 return False
 
     def CreateNewTable(self, tableName: str, values: str):
@@ -118,6 +136,7 @@ class Database():
                 return True
             except Exception as err:
                 Logger.Log(err, Logger.ERROR)
+                self.Cursor.execute("rollback;")
                 return False
 
     def connect(self):

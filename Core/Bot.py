@@ -4,6 +4,7 @@ import asyncio
 from datetime import datetime
 from dotenv import load_dotenv
 import os
+import time
 
 from Core.Logger import Logger
 from Core.Commands import Commands
@@ -24,6 +25,50 @@ class Bot(commands.Bot):
         )
         self.Database.connect()
 
+    async def on_member_join(self, member: discord.Member):
+        '''
+            Creates an user entry in the database whenever a member joins the server
+        '''
+        user: discord.User = await self.get_user(member.id)
+        if not user.bot:
+            # Inserts the user into Heeto's database
+            # Since ID is a primary key it will just raise an error when trying to insert it if it's already in the db
+            self.Database.AddToTable(
+                    "Users",
+                    ID = int(user.id),
+                    Credits = 500,
+                    Level = 1,
+                    Experience = 0,
+                    last_day_streak = datetime.now().strftime("%d/%m/%Y"),
+                    streak = 0,
+                    last_message_epoch = int(time.time())
+                )
+
+    async def on_guild_join(self, guild: discord.Guild):
+        '''
+            Creates a guild config to the database whenever Heeto joins a server
+        '''
+        Logger.Log(f"Joined new server: {guild.name} [{guild.id}]\nCreating Database entry...")
+        self.Database.AddToTable(
+            "Guilds",
+            ID = int(guild.id),
+            OwnerID = int(guild.owner_id),
+            EnabledCommands = (True, True)
+        )
+        for user in guild.members:
+            # For each member in the server, creates an entry in Heeto's database
+            if not user.bot:
+                self.Database.AddToTable(
+                    "Users",
+                    ID = int(user.id),
+                    Credits = 500,
+                    Level = 1,
+                    Experience = 0,
+                    last_day_streak = datetime.now().strftime("%d/%m/%Y"),
+                    streak = 0,
+                    last_message_epoch = int(time.time())
+                )
+
     async def on_ready(self):
         Logger.Log(f"{self.user.name} is now connected to Discord!")
         #Sets bot activity
@@ -34,6 +79,8 @@ class Bot(commands.Bot):
         # Ignore other bot messages
         if (message.author.bot):
             return
+
+
 
         # Process command
         await self.process_commands(message)
