@@ -72,7 +72,7 @@ class Database():
                 self.Cursor.execute(command)
                 self.Connection.commit()
                 return True
-            except Exception as e:
+            except Exception as err:
                 Logger.Log(err, Logger.ERROR)
                 self.Cursor.execute("rollback;")
                 return False

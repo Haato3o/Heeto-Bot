@@ -8,6 +8,7 @@ import time
 
 from Core.Logger import Logger
 from Core.Commands import Commands
+from Core.Mechanics.Level import Level
 from Libs.Database import Database
 load_dotenv(".env")
 
@@ -80,6 +81,10 @@ class Bot(commands.Bot):
         if (message.author.bot):
             return
 
+        if (type(message.channel) not in [discord.ChannelType.private, discord.ChannelType.group]):
+            if Level.CheckIfExpOnCooldown(self.Database, message.author.id, message):
+                newLevel = self.Database.GetFromTable("Users", f"ID = {message.author.id}")[0][2]
+                await message.channel.send(f"Congratulations {message.author.mention}! you are now **level {newLevel}**!")
 
 
         # Process command
