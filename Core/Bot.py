@@ -34,16 +34,23 @@ class Bot(commands.Bot):
         if not user.bot:
             # Inserts the user into Heeto's database
             # Since ID is a primary key it will just raise an error when trying to insert it if it's already in the db
-            self.Database.AddToTable(
+            AddUserQuery = self.Database.AddToTable(
                     "Users",
                     ID = int(user.id),
+                    Name = f"{user.name}#{user.discriminator}",
+                    Servers = f"{ {guild.id} }",
                     Credits = 500,
                     Level = 1,
                     Experience = 0,
                     last_day_streak = datetime.now().strftime("%d/%m/%Y"),
                     streak = 0,
                     last_message_epoch = int(time.time())
-                )
+                    )
+            if not AddUserQuery:
+                query = f'''
+                        UPDATE Users SET Servers = array_append(Servers, {member.guild.id}) WHERE ID = {user.id};
+                    '''
+                self.Database.CommitCommand(query)
 
     async def on_guild_join(self, guild: discord.Guild):
         '''
@@ -59,9 +66,11 @@ class Bot(commands.Bot):
         for user in guild.members:
             # For each member in the server, creates an entry in Heeto's database
             if not user.bot:
-                self.Database.AddToTable(
+                addUserToDatabase = self.Database.AddToTable(
                     "Users",
                     ID = int(user.id),
+                    Name = f"{user.name}#{user.discriminator}",
+                    Servers = f"{ {guild.id} }" ,
                     Credits = 500,
                     Level = 1,
                     Experience = 0,
@@ -69,6 +78,14 @@ class Bot(commands.Bot):
                     streak = 0,
                     last_message_epoch = int(time.time())
                 )
+                if not addUserToDatabase:
+                    # This happens if Heeto fails to add user to database (Usually because user is already in the db).
+                    # If that happens then just add the Server ID to the user entry
+                    query = f'''
+                        UPDATE Users SET Servers = array_append(Servers, {guild.id}) WHERE ID = {user.id};
+                    '''
+                    self.Database.CommitCommand(query)
+                
 
     async def on_ready(self):
         Logger.Log(f"{self.user.name} is now connected to Discord!")
