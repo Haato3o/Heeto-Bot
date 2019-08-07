@@ -11,6 +11,7 @@ class Commands(commands.Cog):
     def LoadAllCogs(self):
         Cogs = [
             "Core.Mechanics.Level",
+            "Core.Mechanics.Economy",
             "Core.Cogs.Admin",
             "Core.Cogs.SKWiki",
             "Core.Cogs.Misc",

@@ -1,3 +1,5 @@
+from datetime import datetime
+
 class BotUtils():
 
     @staticmethod
@@ -13,6 +15,19 @@ class BotUtils():
             formattedLine = f"__**{bot_prefix}{key}__ -> {commands_dict.get(key)}"
             helpDescription.append(formattedLine)
         return "\n".join(helpDescription)
+
+    @staticmethod
+    def parseMoney(money: str) -> int:
+        '''
+            Parses money from string format to int
+            :param money: Money (ex: $500.0)
+            :return: Int (ex: 500)
+        '''
+        return int(float(money.strip("$").replace(",", "")))
+
+    @staticmethod
+    def GetDate() -> str:
+        return datetime.now().strftime("%m/%d/%Y")
 
     @staticmethod
     def isEmoji(char: str) -> bool:

@@ -19,7 +19,7 @@ load_dotenv(".env")
 
 class Level(commands.Cog):
     Experience_Cooldown = 60
-    CalculateLevelFormula = lambda level: int(100 + 100 * level / 5 + (100 * (level / 100)))
+    CalculateLevelFormula = lambda level: int((100 + (100 * level) * (level / 100)))
 
     def __init__(self, bot):
         self.Bot = bot

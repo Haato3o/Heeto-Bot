@@ -100,7 +100,7 @@ class Bot(commands.Bot):
 
         if (type(message.channel) not in [discord.ChannelType.private, discord.ChannelType.group]):
             if Level.CheckIfExpOnCooldown(self.Database, message.author.id, message):
-                newLevel = self.Database.GetFromTable("Users", f"ID = {message.author.id}")[0][2]
+                newLevel = self.Database.GetFromTable("Users", f"ID = {message.author.id}")[0][4]
                 await message.channel.send(f"Congratulations {message.author.mention}! you are now **level {newLevel}**!")
 
 
