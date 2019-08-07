@@ -5,7 +5,9 @@ Heeto bot has a level mechanic, basically whenever an user talks, they get a ran
 
 ### How required experience for next level is calculated?
 The total experience required to level up is calculated by the following formula:
-![level formula](https://raw.githubusercontent.com/Haato3o/Heeto-Bot/master/assets/levelFormula.svg)
+```py
+    ExpRequired = (100 + (100 * level) * (level / 100))
+```
 
 ### Level commands
 - **level** *subcommand or user*
