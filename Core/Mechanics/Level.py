@@ -19,7 +19,7 @@ load_dotenv(".env")
 
 class Level(commands.Cog):
     Experience_Cooldown = 60
-    CalculateLevelFormula = lambda level: 100 + 100 * level / 5 + (100 * (level / 100))
+    CalculateLevelFormula = lambda level: int(100 + 100 * level / 5 + (100 * (level / 100)))
 
     def __init__(self, bot):
         self.Bot = bot
@@ -36,7 +36,6 @@ class Level(commands.Cog):
             "level**" : "Shows user level and experience.",
             "level ranking**" : "Shows the people with highest level globally."
         }
-        
     
     @commands.group(pass_context=True)
     async def level(self, ctx: commands.Context):
