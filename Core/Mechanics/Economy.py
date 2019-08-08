@@ -62,7 +62,7 @@ class Economy(commands.Cog):
                                 WHERE (ID = {ctx.author.id});
                 '''
                 if self.Database.CommitCommand(query):
-                    claimEmbed = discord.Embed(title=ctx.author.name, description=f"You claimed ${dailyCredit}.")
+                    claimEmbed = discord.Embed(title=ctx.author.name, description=f"You claimed ${dailyCredit}.", color = 0x9430FF)
                     claimEmbed.add_field(name="**New balance**", value=f"${dailyCredit + userCredits}")
                     await ctx.send(embed=claimEmbed)
         else:

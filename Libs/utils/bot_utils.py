@@ -1,4 +1,5 @@
 from datetime import datetime
+import discord
 
 class BotUtils():
 
@@ -24,6 +25,15 @@ class BotUtils():
             :return: Int (ex: 500)
         '''
         return int(float(money.strip("$").replace(",", "")))
+
+    @staticmethod
+    def isPublicChannel(channel_type) -> bool:
+        '''
+            Checks if channel is public public or not
+            :param channel_type: Type of channel
+            :return: True if it's a public channel, false if not
+        '''
+        return channel_type not in [discord.ChannelType.private, discord.ChannelType.group]
 
     @staticmethod
     def GetDate() -> str:

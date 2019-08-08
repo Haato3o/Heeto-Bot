@@ -64,6 +64,23 @@ class Level(commands.Cog):
             await ctx.send(embed=userLevelEmbed)
 
     @level.command(pass_context=True)
+    async def ranking(self, ctx: commands.Context, rankingType: str = "server"):
+        if rankingType not in ["server", "global"]:
+            rankingType = "server"
+        if rankingType == "server":
+            ranking = self.Database.GetFromTable("Users", f"({ctx.guild.id} = ANY(Servers)) order by Credits")
+        elif rankingType == "global":
+            ranking = self.Database.GetFromTable("Users", "(TRUE) order by Credits")
+        ranking: list = ranking[::-1] # Reverse array
+        ranking_title = f"Ranking for {ctx.guild.name}" if rankingType == "server" else "Global ranking"
+        rankingEmbed = discord.Embed(
+            title = ranking_title,
+            description = "\n".join([f"{ranking.index(user) + 1}° - **{user[1]}**: Level {user[4]}" for user in ranking]),
+            color = 0x9430FF
+        )
+        await ctx.send(embed=rankingEmbed)
+
+    @level.command(pass_context=True)
     async def help(self, ctx: commands.Context):
         helpText = BotUtils.formatCommandsDict(self.Bot.command_prefix, self.LevelCommands)
         levelHelp = discord.Embed(
