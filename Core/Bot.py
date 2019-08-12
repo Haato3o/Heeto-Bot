@@ -32,32 +32,17 @@ class Bot(commands.Bot):
             Creates an user entry in the database whenever a member joins the server
         '''
         user: discord.User = await self.get_user(member.id)
+        console.log(user.avatar_url_as('png'))
         if not user.bot:
             # Inserts the user into Heeto's database
             # Since ID is a primary key it will just raise an error when trying to insert it if it's already in the db
-            AddUserQuery = self.Database.AddToTable(
-                    "Users",
-                    ID = int(user.id),
-                    Name = f"{user.name}#{user.discriminator}",
-                    Servers = f"{ {guild.id} }",
-                    Credits = 500,
-                    Level = 1,
-                    Experience = 0,
-                    last_day_streak = datetime.now().strftime("%d/%m/%Y"),
-                    streak = 0,
-                    last_message_epoch = int(time.time())
-                    )
-            if not AddUserQuery:
-                query = f'''
-                        UPDATE Users SET Servers = array_append(Servers, {member.guild.id}) WHERE ID = {user.id};
-                    '''
-                self.Database.CommitCommand(query)
+            self.AddUserToDatabase(user, member.guild)
 
     def AddUserToDatabase(self, user, guild):
         addUserToDatabase = self.Database.AddToTable(
                     "Users",
                     ID = int(user.id),
-                    Name = f"{user.name}#{user.discriminator}",
+                    Name = user.name,
                     Servers = f"{ {guild.id} }" ,
                     Credits = 500,
                     Level = 1,
@@ -65,7 +50,10 @@ class Bot(commands.Bot):
                     last_day_streak = datetime(1990, 1, 1).strftime("%m/%d/%Y"),
                     streak = 0,
                     last_message_epoch = int(time.time()),
-                    description = "No description."
+                    description = "No description.",
+                    cardColor = "#FFFFFF",
+                    discriminator = user.discriminator,
+                    avatar = str(user.avatar_url).replace("webp?size=1024", "png")
                 )
         if not addUserToDatabase:
             # This happens if Heeto fails to add user to database (Usually because user is already in the db).
