@@ -32,7 +32,6 @@ class Bot(commands.Bot):
             Creates an user entry in the database whenever a member joins the server
         '''
         user: discord.User = await self.get_user(member.id)
-        console.log(user.avatar_url_as('png'))
         if not user.bot:
             # Inserts the user into Heeto's database
             # Since ID is a primary key it will just raise an error when trying to insert it if it's already in the db
