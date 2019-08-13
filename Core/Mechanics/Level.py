@@ -45,8 +45,8 @@ class Level(commands.Cog):
                 "Users",
                 f"ID = {ctx.author.id}"
             )
-            userDescription = userQuery[9]
-            userColor = userQuery[10].strip('#')
+            userDescription = userQuery[0][9]
+            userColor = userQuery[0][10].strip('#')
             userLevelEmbed = discord.Embed(
                 title = f"{ctx.author.name}",
                 description = userDescription,
