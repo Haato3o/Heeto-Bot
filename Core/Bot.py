@@ -1,3 +1,4 @@
+# Made with <3 by Haato :)
 import discord
 from discord.ext import commands
 import asyncio
