@@ -77,7 +77,7 @@ class Level(commands.Cog):
         ranking_title = f"Ranking for {ctx.guild.name}" if rankingType == "server" else "Global ranking"
         rankingEmbed = discord.Embed(
             title = ranking_title,
-            description = "\n".join([f"{ranking.index(user) + 1}° - **{user[1]}**: Level {user[4]}" for user in ranking]),
+            description = "\n".join([f"{ranking.index(user) + 1}° - **{user[1]}**: Level {user[4]}" for user in ranking[0: 20]]),
             color = 0x9430FF
         )
         await ctx.send(embed=rankingEmbed)
