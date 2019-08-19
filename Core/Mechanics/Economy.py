@@ -51,7 +51,7 @@ class Economy(commands.Cog):
         streak = dbQuery[0][7]
         userCredits = BotUtils.parseMoney(dbQuery[0][3])
         if lastClaim.days > 0:
-            streak = streak if lastClaim == 1 else 0
+            streak = streak if lastClaim.days == 1 else 0
             if streak < 7:
                 dailyCredit = Economy.DailyStreak.get(streak)
                 newStreak = streak + 1 if streak <= 5 else 0

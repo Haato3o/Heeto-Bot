@@ -70,9 +70,9 @@ class Level(commands.Cog):
         if rankingType not in ["server", "global"]:
             rankingType = "server"
         if rankingType == "server":
-            ranking = self.Database.GetFromTable("Users", f"({ctx.guild.id} = ANY(Servers)) order by Credits")
+            ranking = self.Database.GetFromTable("Users", f"({ctx.guild.id} = ANY(Servers)) order by Level")
         elif rankingType == "global":
-            ranking = self.Database.GetFromTable("Users", "(TRUE) order by Credits")
+            ranking = self.Database.GetFromTable("Users", "(TRUE) order by Level")
         ranking: list = ranking[::-1] # Reverse array
         ranking_title = f"Ranking for {ctx.guild.name}" if rankingType == "server" else "Global ranking"
         rankingEmbed = discord.Embed(
