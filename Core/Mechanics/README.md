@@ -13,4 +13,4 @@ The total experience required to level up is calculated by the following formula
 - **level** *subcommand or user*
     - **user**
     - **Available subcommands**
-        - 
+        - TODO

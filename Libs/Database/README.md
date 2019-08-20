@@ -5,7 +5,7 @@ Heeto uses Heroku's PostgreSQL extension to store useful information required by
 ## Users
 This table will be used by the **level**, **profile**, **ranking**, **economy** mechanics.
 ```sql
-CREATE TABLE Users (ID bigint primary key not null, Name varchar(255), Servers bigint [], credits MONEY not null, level int not null, experience int not null, last_day_streak date not null, streak int not null, last_message_epoch int not null, description TEXT);
+CREATE TABLE Users (ID bigint primary key not null, Name varchar(255), Servers bigint [], credits MONEY not null, level int not null, experience int not null, last_day_streak date not null, streak int not null, last_message_epoch int not null, description TEXT, cardColor TEXT, discriminator TEXT, avatar TEXT);
 ```
 
 ## Bot_Commands
