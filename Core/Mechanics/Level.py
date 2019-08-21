@@ -39,16 +39,16 @@ class Level(commands.Cog):
     
     @commands.group(pass_context=True)
     async def level(self, ctx: commands.Context):
-        # TODO: Change this command so you can query for other people's level too
         if ctx.invoked_subcommand == None:
+            user = ctx.message.mentions[0] if len(ctx.message.mentions) > 0 else ctx.author
             userQuery = self.Database.GetFromTable(
                 "Users",
-                f"ID = {ctx.author.id}"
+                f"ID = {user.id}"
             )
             userDescription = userQuery[0][9]
             userColor = userQuery[0][10].strip('#')
             userLevelEmbed = discord.Embed(
-                title = f"{ctx.author.name}",
+                title = f"{user.name}",
                 description = userDescription,
                 color = int(userColor, 16)
             )
@@ -61,7 +61,7 @@ class Level(commands.Cog):
                 value = f"{userQuery[0][5]}/{Level.CalculateLevelFormula(userQuery[0][4])}"
             )
             userLevelEmbed.set_thumbnail(
-                url = ctx.author.avatar_url
+                url = user.avatar_url
             )
             await ctx.send(embed=userLevelEmbed)
 

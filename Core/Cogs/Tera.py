@@ -3,7 +3,7 @@ import discord
 from datetime import datetime
 
 from Core.Logger import Logger
-from Core.Libs.utils.bot_utils import BotUtils
+from Libs.utils.bot_utils import BotUtils
 import Libs.TeraStatus as TeraStatus
 
 class Tera(commands.Cog):
