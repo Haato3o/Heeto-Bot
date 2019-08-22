@@ -33,8 +33,8 @@ class Level(commands.Cog):
         )
         self.Database.connect()
         self.LevelCommands = {
-            "level**" : "Shows user level and experience.",
-            "level ranking**" : "Shows the people with highest level globally."
+            "level <user>**" : "Shows <user> level and experience.",
+            "level ranking <global or server>**" : "Shows the people with highest level in server or globally. (Default is server)"
         }
     
     @commands.group(pass_context=True)
