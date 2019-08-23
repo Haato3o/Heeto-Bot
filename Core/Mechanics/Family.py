@@ -2,16 +2,18 @@ import discord
 from discord.ext import commands
 import asyncio
 import os
+import random
 from dotenv import load_dotenv
 
 from Libs.Database import Database
 from Core.Logger import Logger
 from Libs.utils.bot_utils import BotUtils
 
+
 load_dotenv('.env')
 
 class Family(commands.Cog):
-    MarriageCost = 0
+    MarriageCost = 1000
 
     def __init__(self, bot):
         self.Bot: commands.Bot = bot
@@ -39,21 +41,31 @@ class Family(commands.Cog):
 
     @commands.command(pass_context=True)
     async def marry(self, ctx: commands.Context, target = None):
-        if target == None:
-            await ctx.send("You can't marry to no one :(")
-            return
-        elif target == ctx.author.id:
-            await ctx.send("You can't marry youself. :(")
-            return
-
-        userQuery = self.Database.GetFromTable("Users", f"ID = {ctx.author.id}")
-        married_to = userQuery[0][13]
-        Credits = userQuery[0][3]
         try:
             target = int(target.strip("<!@>"))
             target = self.Bot.get_user(target)
         except:
             await ctx.send(f"{ctx.author.mention} That's not a valid user!")
+            return
+        if target == None:
+            await ctx.send("You can't marry to no one :(")
+            return
+        elif target.id == ctx.author.id:
+            await ctx.send("You can't marry yourself. :(")
+            return
+        elif target.id == self.Bot.user.id:
+            quotes = [
+                "UWU U WANNAN MAWWY MIII? UHUH UWU OWO",
+                "I'm {random_age} years old btw",
+                f"🎉 {ctx.author.mention} is now married to {self.Bot.user.mention}! ❤"
+            ]
+            await ctx.send(random.choice(quotes).replace("{random_age}", f"{random.randint(2, 14)}"))
+            return
+
+        userQuery = self.Database.GetFromTable("Users", f"ID = {ctx.author.id}")
+        married_to = userQuery[0][13]
+        Credits = userQuery[0][3]
+        
         targetQuery = self.Database.GetFromTable("Users", f"ID = {target.id}")
         target_Married_to = targetQuery[0][13]
 
