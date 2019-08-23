@@ -46,11 +46,11 @@ class Level(commands.Cog):
                 f"ID = {user.id}"
             )
             userDescription = userQuery[0][9]
-            userColor = userQuery[0][10].strip('#')
+            userColor = BotUtils.parseColorFromString(userQuery[0][10])
             userLevelEmbed = discord.Embed(
                 title = f"{user.name}",
                 description = userDescription,
-                color = int(userColor, 16)
+                color = userColor
             )
             userLevelEmbed.add_field(
                 name = "**LEVEL**",

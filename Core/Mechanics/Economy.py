@@ -40,7 +40,7 @@ class Economy(commands.Cog):
         currencyEmbed = discord.Embed(
             title=f"{ctx.author.name}'s balance",
             description=f"**Balance:** {dbQuery[0][3]}",
-            color=0x9430FF
+            color=BotUtils.parseColorFromString(dbQuery[0][10])
             )
         await ctx.send(embed=currencyEmbed)
     

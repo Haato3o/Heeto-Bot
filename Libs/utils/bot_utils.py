@@ -18,6 +18,11 @@ class BotUtils():
         return "\n".join(helpDescription)
 
     @staticmethod
+    def parseColorFromString(color: str) -> int:
+        color = color.strip("#")
+        return int(color, 16)
+
+    @staticmethod
     def parseMoney(money: str) -> int:
         '''
             Parses money from string format to int

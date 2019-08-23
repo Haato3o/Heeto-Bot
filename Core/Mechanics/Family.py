@@ -30,14 +30,14 @@ class Family(commands.Cog):
     def divorceUsers(self, user_req, user_target):
         query1 = f'''UPDATE Users SET married_to = null WHERE id = {user_req};'''
         query2 = f'''UPDATE Users SET married_to = null WHERE id = {user_target};'''
-        self.Database.CommitCommand(query1)
-        self.Database.CommitCommand(query2)
+        return self.Database.CommitCommand(query1) and self.Database.CommitCommand(query2)
+        
 
     def marryUsers(self, user_req, user_target):
         query1 = f'''UPDATE Users SET married_to = {user_target} WHERE id = {user_req};'''
         query2 = f'''UPDATE Users SET married_to = {user_req} WHERE id = {user_target};'''
-        self.Database.CommitCommand(query1)
-        self.Database.CommitCommand(query2)
+        return self.Database.CommitCommand(query1) and self.Database.CommitCommand(query2)
+        
 
     @commands.command(pass_context=True)
     async def marry(self, ctx: commands.Context, target = None):
@@ -111,8 +111,10 @@ class Family(commands.Cog):
                             await confirmationReceive.edit(content="Time's up!")
                         else:
                             if (str(reaction.emoji) == "✅" and user.id == target.id):
-                                self.marryUsers(ctx.author.id, target.id)
-                                await ctx.send(f"🎉 {ctx.author.mention} is now married to {target.mention}! ❤")
+                                if self.marryUsers(ctx.author.id, target.id):
+                                    query = f"UPDATE Users SET credits = {Credits - Family.MarriageCost} where ID = {ctx.author.id};"
+                                    self.Database.CommitCommand(query)
+                                    await ctx.send(f"🎉 {ctx.author.mention} is now married to {target.mention}! ❤")
                                 return
                             elif (str(reaction.emoji) == "❌" and user.id == target.id):
                                 await confirmationReceive.edit(content=f"{target.mention} denied {ctx.author.mention}'s proposal!")
