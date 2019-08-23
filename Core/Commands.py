@@ -12,6 +12,7 @@ class Commands(commands.Cog):
         Cogs = [
             "Core.Mechanics.Level",
             "Core.Mechanics.Economy",
+            "Core.Mechanics.Family",
             "Core.Cogs.Admin",
             "Core.Cogs.SKWiki",
             "Core.Cogs.Misc",

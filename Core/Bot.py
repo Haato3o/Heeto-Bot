@@ -53,7 +53,8 @@ class Bot(commands.Bot):
                     description = "You can change your user card [here](http://heeto.herokuapp.com)",
                     cardColor = "#FFFFFF",
                     discriminator = user.discriminator,
-                    avatar = str(user.avatar_url).replace("webp?size=1024", "png")
+                    avatar = str(user.avatar_url).replace("webp?size=1024", "png"),
+                    married_to = "null"
                 )
         if not addUserToDatabase:
             # This happens if Heeto fails to add user to database (Usually because user is already in the db).
