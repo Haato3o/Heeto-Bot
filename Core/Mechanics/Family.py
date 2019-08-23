@@ -86,7 +86,7 @@ class Family(commands.Cog):
                 try:
                     reaction, user = await self.Bot.wait_for("reaction_add", timeout=20.0, check=confirmMarriageRequest)
                 except asyncio.TimeoutError:
-                    await confirmation.edit("Time's up!")
+                    await confirmation.edit(content="Time's up!")
                 else:
                     if (user.id == ctx.author.id):
                         # Creates the confirmation message
@@ -96,7 +96,7 @@ class Family(commands.Cog):
                         try:
                             reaction, user = await self.Bot.wait_for("reaction_add", timeout=20.0, check=confirmMarriageReceive)
                         except asyncio.TimeoutError:
-                            await confirmationReceive.edit("Time's up!")
+                            await confirmationReceive.edit(content="Time's up!")
                         else:
                             if (user.id == target.id):
                                 self.marryUsers(ctx.author.id, target.id)
