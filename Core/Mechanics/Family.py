@@ -109,7 +109,7 @@ class Family(commands.Cog):
 
     @commands.command(pass_context=True)
     async def divorce(self, ctx: commands.Context):
-        userQuery = self.Database.GetFromTable("Users", f"id = {ctx.author.id}")[0]
+        userQuery = self.Database.GetFromTable("Users", f"id = {ctx.author.id}")
         if userQuery[0][13] != None:
             married_to = self.Bot.get_user(userQuery[0][13])
             await ctx.send(f"You and {married_to.name} are not married anymore!")
