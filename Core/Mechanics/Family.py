@@ -86,7 +86,7 @@ class Family(commands.Cog):
                 try:
                     reaction, user = await self.Bot.wait_for("reaction_add", timeout=20.0, check=confirmMarriageRequest)
                 except asyncio.TimeoutError:
-                    await confirmation.delete()
+                    await confirmation.edit("Time's up!")
                 else:
                     if (user.id == ctx.author.id):
                         # Creates the confirmation message
@@ -96,7 +96,7 @@ class Family(commands.Cog):
                         try:
                             reaction, user = await self.Bot.wait_for("reaction_add", timeout=20.0, check=confirmMarriageReceive)
                         except asyncio.TimeoutError:
-                            await confirmationReceive.delete()
+                            await confirmationReceive.edit("Time's up!")
                         else:
                             if (user.id == target.id):
                                 self.marryUsers(ctx.author.id, target.id)
@@ -112,6 +112,7 @@ class Family(commands.Cog):
         userQuery = self.Database.GetFromTable("Users", f"id = {ctx.author.id}")
         if userQuery[0][13] != None:
             married_to = self.Bot.get_user(userQuery[0][13])
+            self.divorceUsers(ctx.author.id, married_to.id)
             await ctx.send(f"You and {married_to.name} are not married anymore!")
         else:
             await ctx.send("Uhhh... You can't divorce if you're not even married!")
