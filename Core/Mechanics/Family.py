@@ -61,7 +61,7 @@ class Family(commands.Cog):
             if str(reaction.emoji) == "✅" and user == ctx.author:
                 return True
             elif str(reaction.emoji) == "❌" and user == ctx.author:
-                return False
+                return True
             else:
                 return
         
@@ -69,7 +69,7 @@ class Family(commands.Cog):
             if str(reaction.emoji) == "✅" and user == target:
                 return True
             elif str(reaction.emoji) == "❌" and user == target:
-                return False
+                return True
             else:
                 return
 
@@ -88,7 +88,7 @@ class Family(commands.Cog):
                 except asyncio.TimeoutError:
                     await confirmation.edit(content="Time's up!")
                 else:
-                    if (user.id == ctx.author.id):
+                    if (str(reaction.emoji) == "✅" and user.id == ctx.author.id):
                         # Creates the confirmation message
                         confirmationReceive:discord.Message = await ctx.send(f"{target.mention} Do you want to marry {ctx.author.mention}?")
                         await confirmationReceive.add_reaction("✅")
@@ -98,10 +98,14 @@ class Family(commands.Cog):
                         except asyncio.TimeoutError:
                             await confirmationReceive.edit(content="Time's up!")
                         else:
-                            if (user.id == target.id):
+                            if (str(reaction.emoji) == "✅" and user.id == target.id):
                                 self.marryUsers(ctx.author.id, target.id)
                                 await ctx.send(f"🎉 {ctx.author.mention} is now married to {target.mention}! ❤")
                                 return
+                            elif (str(reaction.emoji) == "❌" and user.id == target.id):
+                                await confirmationReceive.edit(content=f"{target.mention} denied {ctx.author.mention}'s proposal!")
+                    elif (str(reaction.emoji) == "❌" and user.id == ctx.author.id):
+                        await confirmation.edit(content="Marriage cancelled!")
             else:
                 await ctx.send(f"Marrying costs ${Family.MarriageCost}, you have only {Credits}")
         else:
