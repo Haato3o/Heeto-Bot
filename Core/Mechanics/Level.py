@@ -22,7 +22,7 @@ class Level(commands.Cog):
     CalculateLevelFormula = lambda level: int((100 + (100 * level) * (level / 100)))
 
     def __init__(self, bot):
-        self.Bot = bot
+        self.Bot:commands.Bot = bot
         Logger.Log("Loaded Level mechanics!")
         self.Database = Database(
             username = os.getenv("DATABASE_USER"),
@@ -54,11 +54,17 @@ class Level(commands.Cog):
             )
             userLevelEmbed.add_field(
                 name = "**LEVEL**",
-                value = userQuery[0][4]
+                value = userQuery[0][4],
+                inline = True
             )
             userLevelEmbed.add_field(
                 name = "**EXPERIENCE**",
-                value = f"{userQuery[0][5]}/{Level.CalculateLevelFormula(userQuery[0][4])}"
+                value = f"{userQuery[0][5]}/{Level.CalculateLevelFormula(userQuery[0][4])}",
+                inline = True
+            )
+            userLevelEmbed.add_field(
+                name = "**MARRIED TO**",
+                value = "No one." if userQuery[0][13] == None else self.Bot.get_user(userQuery[0][13])
             )
             userLevelEmbed.set_thumbnail(
                 url = user.avatar_url
