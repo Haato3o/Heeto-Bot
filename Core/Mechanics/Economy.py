@@ -54,6 +54,10 @@ class Economy(commands.Cog):
         except:
             await ctx.send(f"{ctx.author.mention} Not a valid user!")
             return
+        if to_user.id == ctx.author.id:
+            # Blocks people sending themselves money
+            await ctx.send(f"{ctx.author.id} You can't send yourself money!")
+            return
         targetQuery = self.Database.GetFromTable("Users", f"id = {to_user.id}")[0]
         userQuery = self.Database.GetFromTable("Users", f"id = {ctx.author.id}")[0]
         targetQueryMoney = BotUtils.parseMoney(targetQuery[3])
@@ -78,23 +82,33 @@ class Economy(commands.Cog):
             transactionEmbed.add_field(
                 name = "**SENDER**",
                 value = f"{ctx.author}",
-                inline = False
+                inline = True
             )
             transactionEmbed.add_field(
                 name = "**NEW BALANCE**",
                 value = f"||${userMoney:,.2f}||",
-                inline = False
+                inline = True
+            )
+            transactionEmbed.add_field(
+                name = "**ID**",
+                value = f"{ctx.author.id}",
+                inline = True
             )
             # Receiver
             transactionEmbed.add_field(
                 name = "**RECEIVER**",
                 value = f"{to_user}",
-                inline = False
+                inline = True
             )
             transactionEmbed.add_field(
                 name = "**NEW BALANCE**",
                 value = f"||${targetQueryMoney:,.2f}||",
-                inline = False
+                inline = True
+            )
+            transactionEmbed.add_field(
+                name = "**ID**",
+                value = f"{to_user.id}",
+                inline = True
             )
             await ctx.send(embed=transactionEmbed)
         else:
