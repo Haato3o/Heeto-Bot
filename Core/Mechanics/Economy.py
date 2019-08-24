@@ -82,7 +82,7 @@ class Economy(commands.Cog):
             )
             transactionEmbed.add_field(
                 name = "**NEW BALANCE**",
-                value = f"${userMoney:,}",
+                value = f"${userMoney:,.2f}",
                 inline = True
             )
             # Receiver
@@ -93,10 +93,10 @@ class Economy(commands.Cog):
             )
             transactionEmbed.add_field(
                 name = "**NEW BALANCE**",
-                value = f"${targetQueryMoney:,}",
+                value = f"${targetQueryMoney:,.2f}",
                 inline = True
             )
-            ctx.send(embed=transactionEmbed)
+            await ctx.send(embed=transactionEmbed)
         else:
             await ctx.send(f"{ctx.author.id} You don't have that much money!")
 
