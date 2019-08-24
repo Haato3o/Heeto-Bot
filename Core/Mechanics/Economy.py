@@ -40,7 +40,7 @@ class Economy(commands.Cog):
             await ctx.send("This is a placeholder btw, gonna change this later")
 
     @money.command(pass_context=True)
-    async def send(self, ctx: commands.Context, amount, to_user = None):
+    async def send(self, ctx: commands.Context, to_user = None, amount = None):
         try:
             amount = BotUtils.parseMoney(amount)
         except:
