@@ -56,8 +56,9 @@ class Economy(commands.Cog):
             return
         if to_user.id == ctx.author.id:
             # Blocks people sending themselves money
-            await ctx.send(f"{ctx.author.id} You can't send yourself money!")
+            await ctx.send(f"{ctx.author.mention} You can't send yourself money!")
             return
+        # Get users in the database
         targetQuery = self.Database.GetFromTable("Users", f"id = {to_user.id}")[0]
         userQuery = self.Database.GetFromTable("Users", f"id = {ctx.author.id}")[0]
         targetQueryMoney = BotUtils.parseMoney(targetQuery[3])
