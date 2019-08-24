@@ -27,6 +27,29 @@ class Family(commands.Cog):
         )
         self.Database.connect()
     
+    async def createConfirmation(self, message: discord.Message, emojis: list, user: discord.User) -> bool:
+        def check(emote, usr):
+            if (str(emote.emoji) == "✅" and usr == user):
+                return True
+            elif (str(emote.emoji) == "❌" and usr == user):
+                return True
+            else:
+                return
+        
+        for reaction in emojis:
+            await message.add_reaction(reaction)
+        try:
+            emote, usr = await self.Bot.wait_for("reaction_add", timeout=15.0, check=check)
+        except asyncio.TimeoutError:
+            await message.edit(content = "Time's up!")
+            await message.clear_reactions()
+            return None
+        else:
+            if str(emote.emoji) == "✅" and usr.id == user.id:
+                return True
+            else:
+                return False
+
     def divorceUsers(self, user_req, user_target):
         query1 = f'''UPDATE Users SET married_to = null WHERE id = {user_req};'''
         query2 = f'''UPDATE Users SET married_to = null WHERE id = {user_target};'''
@@ -69,22 +92,6 @@ class Family(commands.Cog):
         targetQuery = self.Database.GetFromTable("Users", f"ID = {target.id}")
         target_Married_to = targetQuery[0][13]
 
-        def confirmMarriageRequest(reaction, user):
-            if str(reaction.emoji) == "✅" and user == ctx.author:
-                return True
-            elif str(reaction.emoji) == "❌" and user == ctx.author:
-                return True
-            else:
-                return
-        
-        def confirmMarriageReceive(reaction, user):
-            if str(reaction.emoji) == "✅" and user == target:
-                return True
-            elif str(reaction.emoji) == "❌" and user == target:
-                return True
-            else:
-                return
-
         if married_to == None:
             if target_Married_to != None:
                 await ctx.send(f"{ctx.author.mention} That person is married already!")
@@ -92,34 +99,22 @@ class Family(commands.Cog):
             if BotUtils.parseMoney(Credits) >= Family.MarriageCost:
                 # Creates the confirmation message
                 confirmation:discord.Message = await ctx.send(f"{ctx.author.mention} Marrying costs ${Family.MarriageCost}. Do you want to continue?")
-                await confirmation.add_reaction("✅")
-                await confirmation.add_reaction("❌")
-                # Wait for user reaction
-                try:
-                    reaction, user = await self.Bot.wait_for("reaction_add", timeout=20.0, check=confirmMarriageRequest)
-                except asyncio.TimeoutError:
-                    await confirmation.edit(content="Time's up!")
-                else:
-                    if (str(reaction.emoji) == "✅" and user.id == ctx.author.id):
-                        # Creates the confirmation message
-                        confirmationReceive:discord.Message = await ctx.send(f"{target.mention} Do you want to marry {ctx.author.mention}?")
-                        await confirmationReceive.add_reaction("✅")
-                        await confirmationReceive.add_reaction("❌")
-                        try:
-                            reaction, user = await self.Bot.wait_for("reaction_add", timeout=20.0, check=confirmMarriageReceive)
-                        except asyncio.TimeoutError:
-                            await confirmationReceive.edit(content="Time's up!")
-                        else:
-                            if (str(reaction.emoji) == "✅" and user.id == target.id):
-                                if self.marryUsers(ctx.author.id, target.id):
-                                    query = f"UPDATE Users SET credits = {BotUtils.parseMoney(Credits) - Family.MarriageCost} where ID = {ctx.author.id};"
-                                    self.Database.CommitCommand(query)
-                                    await ctx.send(f"🎉 {ctx.author.mention} is now married to {target.mention}! ❤")
-                                return
-                            elif (str(reaction.emoji) == "❌" and user.id == target.id):
-                                await confirmationReceive.edit(content=f"{target.mention} denied {ctx.author.mention}'s proposal!")
-                    elif (str(reaction.emoji) == "❌" and user.id == ctx.author.id):
-                        await confirmation.edit(content="Marriage cancelled!")
+                confirmationRequest = await self.createConfirmation(confirmation, ["✅", "❌"], ctx.author)
+                if confirmationRequest == False:
+                    await confirmation.edit(content="Marriage cancelled!")
+                    return
+                elif confirmationRequest:      
+                    receiveMarriageRequest = await ctx.send(f"{target.mention} Do you want to marry {ctx.author.mention}?")
+                    confirmationReceive = await self.createConfirmation(receiveMarriageRequest, ["✅", "❌"], target)
+                    if confirmationReceive == False:
+                        await confirmationReceive.edit(content=f"{target.mention} denied {ctx.author.mention}'s proposal!")
+                        return
+                    elif confirmationReceive:
+                        if self.marryUsers(ctx.author.id, target.id):
+                            query = f"UPDATE Users SET credits = {BotUtils.parseMoney(Credits) - Family.MarriageCost} where ID = {ctx.author.id};"
+                            self.Database.CommitCommand(query)
+                            await ctx.send(f"🎉 {ctx.author.mention} is now married to {target.mention}! ❤")
+                            return
             else:
                 await ctx.send(f"Marrying costs ${Family.MarriageCost}, you have only {Credits}")
         else:
@@ -130,8 +125,13 @@ class Family(commands.Cog):
         userQuery = self.Database.GetFromTable("Users", f"id = {ctx.author.id}")
         if userQuery[0][13] != None:
             married_to = self.Bot.get_user(userQuery[0][13])
-            self.divorceUsers(ctx.author.id, married_to.id)
-            await ctx.send(f"You and {married_to.name} are not married anymore!")
+            confirmation = await ctx.send(f"Are you sure you want to divorce **{married_to}**?")
+            confirm = await self.createConfirmation(confirmation, ["✅", "❌"], ctx.author)
+            if confirm == False:
+                await confirmation.edit(content="Divorce cancelled!")
+            elif confirm:
+                self.divorceUsers(ctx.author.id, married_to.id)
+                await ctx.send(f"You and {married_to.name} are not married anymore!")
         else:
             await ctx.send("Uhhh... You can't divorce if you're not even married!")
 

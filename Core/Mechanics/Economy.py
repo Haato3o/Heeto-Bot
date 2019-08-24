@@ -4,6 +4,7 @@ import os
 from dotenv import load_dotenv
 from datetime import datetime
 from random import randint
+import asyncio
 
 from Core.Logger import Logger
 from Libs.Database import Database
@@ -33,6 +34,29 @@ class Economy(commands.Cog):
             db_name = os.getenv("DATABASE_NAME")
         )
         self.Database.connect()
+
+    async def createConfirmation(self, message: discord.Message, emojis: list, user: discord.User) -> bool:
+        def check(emote, usr):
+            if (str(emote.emoji) == "✅" and usr == user):
+                return True
+            elif (str(emote.emoji) == "❌" and usr == user):
+                return True
+            else:
+                return
+        
+        for reaction in emojis:
+            await message.add_reaction(reaction)
+        try:
+            emote, usr = await self.Bot.wait_for("reaction_add", timeout=15.0, check=check)
+        except asyncio.TimeoutError:
+            await message.edit(content = "Time's up!")
+            return None
+        else:
+            if str(emote.emoji) == "✅" and usr.id == user.id:
+                return True
+            else:
+                return False
+
 
     @commands.group(pass_context=True)
     async def money(self, ctx: commands.Context):
@@ -64,54 +88,59 @@ class Economy(commands.Cog):
         targetQueryMoney = BotUtils.parseMoney(targetQuery[3])
         userMoney = BotUtils.parseMoney(userQuery[3])
         if userMoney >= amount:
-            userMoney -= amount
-            targetQueryMoney += amount
-
-            # Gives target $amount
-            queries = [
-                f"UPDATE Users SET credits = {userMoney} WHERE id = {ctx.author.id};",
-                f"UPDATE Users SET credits = {targetQueryMoney} WHERE id = {to_user.id};"
-            ]
-            for query in queries:
-                self.Database.CommitCommand(query)
-            transactionEmbed = discord.Embed(
-                title = f"Transaction {ctx.author} => {to_user}",
-                timestamp = datetime.now(),
-                color = 0xF3BF0C
-            )
-            # Sender
-            transactionEmbed.add_field(
-                name = "**SENDER**",
-                value = f"{ctx.author}",
-                inline = True
-            )
-            transactionEmbed.add_field(
-                name = "**NEW BALANCE**",
-                value = f"||${userMoney:,.2f}||",
-                inline = True
-            )
-            transactionEmbed.add_field(
-                name = "**ID**",
-                value = f"{ctx.author.id}",
-                inline = True
-            )
-            # Receiver
-            transactionEmbed.add_field(
-                name = "**RECEIVER**",
-                value = f"{to_user}",
-                inline = True
-            )
-            transactionEmbed.add_field(
-                name = "**NEW BALANCE**",
-                value = f"||${targetQueryMoney:,.2f}||",
-                inline = True
-            )
-            transactionEmbed.add_field(
-                name = "**ID**",
-                value = f"{to_user.id}",
-                inline = True
-            )
-            await ctx.send(embed=transactionEmbed)
+            confirmation = await ctx.send(f"Do you want to give **{to_user}** **${amount:,.2f}**?")
+            conf = await self.createConfirmation(confirmation, ["✅", "❌"], ctx.author)
+            if conf:
+                userMoney -= amount
+                targetQueryMoney += amount
+                # Gives target $amount
+                queries = [
+                    f"UPDATE Users SET credits = {userMoney} WHERE id = {ctx.author.id};",
+                    f"UPDATE Users SET credits = {targetQueryMoney} WHERE id = {to_user.id};"
+                ]
+                for query in queries:
+                    self.Database.CommitCommand(query)
+                transactionEmbed = discord.Embed(
+                    title = f"Transaction {ctx.author} => {to_user}",
+                    timestamp = datetime.now(),
+                    color = 0xF3BF0C
+                )
+                # Sender
+                transactionEmbed.add_field(
+                    name = "**SENDER**",
+                    value = f"{ctx.author}",
+                    inline = True
+                )
+                transactionEmbed.add_field(
+                    name = "**NEW BALANCE**",
+                    value = f"||${userMoney:,.2f}||",
+                    inline = True
+                )
+                transactionEmbed.add_field(
+                    name = "**ID**",
+                    value = f"{ctx.author.id}",
+                    inline = True
+                )
+                # Receiver
+                transactionEmbed.add_field(
+                    name = "**RECEIVER**",
+                    value = f"{to_user}",
+                    inline = True
+                )
+                transactionEmbed.add_field(
+                    name = "**NEW BALANCE**",
+                    value = f"||${targetQueryMoney:,.2f}||",
+                    inline = True
+                )
+                transactionEmbed.add_field(
+                    name = "**ID**",
+                    value = f"{to_user.id}",
+                    inline = True
+                )
+                await ctx.send(embed=transactionEmbed)
+            elif conf == False:
+                await confirmation.edit(content="Transaction cancelled!")
+                return
         else:
             await ctx.send(f"{ctx.author.id} You don't have that much money!")
 
