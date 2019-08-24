@@ -54,8 +54,8 @@ class Economy(commands.Cog):
         except:
             await ctx.send(f"{ctx.author.mention} Not a valid user!")
             return
-        targetQuery = self.Database.GetFromTable(to_user.id)[0]
-        userQuery = self.Database.GetFromTable(ctx.author.id)[0]
+        targetQuery = self.Database.GetFromTable("Users", f"id = {to_user.id}")[0]
+        userQuery = self.Database.GetFromTable("Users", f"id = {ctx.author.id}")[0]
         targetQueryMoney = BotUtils.parseMoney(targetQuery[3])
         userMoney = BotUtils.parseMoney(userQuery[3])
         if userMoney >= amount:
