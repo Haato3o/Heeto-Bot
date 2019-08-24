@@ -23,7 +23,7 @@ class Economy(commands.Cog):
         6 : 1000
     }
     def __init__(self, bot):
-        self.bot = bot
+        self.Bot: commands.Bot = bot
         Logger.Log("Economy mechanics loaded!")
         self.Database = Database(
             username = os.getenv("DATABASE_USER"),
@@ -33,6 +33,72 @@ class Economy(commands.Cog):
             db_name = os.getenv("DATABASE_NAME")
         )
         self.Database.connect()
+
+    @commands.group(pass_context=True)
+    async def money(self, ctx: commands.Context):
+        if ctx.invoked_subcommand == None:
+            await ctx.send("This is a placeholder btw, gonna change this later")
+
+    @money.command(pass_context=True)
+    async def send(self, ctx: commands.Context, amount, to_user = None):
+        try:
+            amount = BotUtils.parseMoney(amount)
+        except:
+            await ctx.send(f"{ctx.author.mention} That's not a valid amount! 🤔")
+            return
+        if to_user == None:
+            ctx.send("You can't send money to no one.")
+        to_user = to_user.strip("<!@>")
+        try:
+            to_user = self.Bot.get_user(int(to_user))
+        except:
+            await ctx.send(f"{ctx.author.mention} Not a valid user!")
+            return
+        targetQuery = self.Database.GetFromTable(to_user.id)[0]
+        userQuery = self.Database.GetFromTable(ctx.author.id)[0]
+        targetQueryMoney = BotUtils.parseMoney(targetQuery[3])
+        userMoney = BotUtils.parseMoney(userQuery[3])
+        if userMoney >= amount:
+            userMoney -= amount
+            targetQueryMoney += amount
+
+            # Gives target $amount
+            queries = [
+                f"UPDATE Users SET credits = {userMoney} WHERE id = {ctx.author.id};",
+                f"UPDATE Users SET credits = {targetQueryMoney} WHERE id {to_user.id};"
+            ]
+            for query in queries:
+                self.Database.CommitCommand(query)
+            transactionEmbed = discord.Embed(
+                title = f"Transaction {ctx.author} => {to_user}",
+                timestamp = datetime.now(),
+                color = 0xF3BF0C
+            )
+            # Sender
+            transactionEmbed.add_field(
+                name = "**SENDER**",
+                value = f"{ctx.author}",
+                inline = True
+            )
+            transactionEmbed.add_field(
+                name = "**NEW BALANCE**",
+                value = f"${userMoney:,}",
+                inline = True
+            )
+            # Receiver
+            transactionEmbed.add_field(
+                name = "**RECEIVER**",
+                value = f"{to_user}",
+                inline = False
+            )
+            transactionEmbed.add_field(
+                name = "**NEW BALANCE**",
+                value = f"${targetQueryMoney:,}",
+                inline = True
+            )
+            ctx.send(embed=transactionEmbed)
+        else:
+            await ctx.send(f"{ctx.author.id} You don't have that much money!")
 
     @commands.command(pass_context=True)
     async def balance(self, ctx: commands.Context):
