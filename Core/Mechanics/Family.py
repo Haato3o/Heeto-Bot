@@ -112,7 +112,7 @@ class Family(commands.Cog):
                         else:
                             if (str(reaction.emoji) == "✅" and user.id == target.id):
                                 if self.marryUsers(ctx.author.id, target.id):
-                                    query = f"UPDATE Users SET credits = {Credits - Family.MarriageCost} where ID = {ctx.author.id};"
+                                    query = f"UPDATE Users SET credits = {BotUtils.parseMoney(Credits) - Family.MarriageCost} where ID = {ctx.author.id};"
                                     self.Database.CommitCommand(query)
                                     await ctx.send(f"🎉 {ctx.author.mention} is now married to {target.mention}! ❤")
                                 return
