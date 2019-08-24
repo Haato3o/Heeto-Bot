@@ -65,7 +65,7 @@ class Economy(commands.Cog):
             # Gives target $amount
             queries = [
                 f"UPDATE Users SET credits = {userMoney} WHERE id = {ctx.author.id};",
-                f"UPDATE Users SET credits = {targetQueryMoney} WHERE id {to_user.id};"
+                f"UPDATE Users SET credits = {targetQueryMoney} WHERE id = {to_user.id};"
             ]
             for query in queries:
                 self.Database.CommitCommand(query)
