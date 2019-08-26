@@ -70,6 +70,9 @@ class Economy(commands.Cog):
         except:
             await ctx.send(f"{ctx.author.mention} That's not a valid amount! 🤔")
             return
+        if amount <= 0:
+            await ctx.send(f"{ctx.author.mention} Amount must be over $1")
+            return
         if to_user == None:
             ctx.send("You can't send money to no one.")
         to_user = to_user.strip("<!@>")
