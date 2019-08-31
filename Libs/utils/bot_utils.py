@@ -1,8 +1,8 @@
 from datetime import datetime
 import discord
+import random
 
 class BotUtils():
-
     @staticmethod
     def formatCommandsDict(bot_prefix: str, commands_dict: dict) -> str:
         '''

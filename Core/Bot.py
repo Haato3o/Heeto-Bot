@@ -28,6 +28,13 @@ class Bot(commands.Bot):
         )
         self.Database.connect()
 
+    @commands.command(pass_context=True)
+    async def help(self, ctx: commands.Context):
+        help_embed = discord.Embed(
+            title = "Help",
+            description = "You can check all commands available [here](http://heetobot.com/commands)"
+        )
+
     async def on_member_join(self, member: discord.Member):
         '''
             Creates an user entry in the database whenever a member joins the server
@@ -111,7 +118,7 @@ class Bot(commands.Bot):
         if BotUtils.isPublicChannel(type(message.channel)):
             if Level.CheckIfExpOnCooldown(self.Database, message.author.id, message):
                 newLevel = self.Database.GetFromTable("Users", f"ID = {message.author.id}")[0][4]
-                await message.channel.send(f"Congratulations {message.author.mention}! you are now **level {newLevel}**!")
+                await message.channel.send(f"Congratulations {message.author.mention}! you are now **level {newLevel}**! <:peepoHappy:617113235828637721>")
 
 
         # Process command

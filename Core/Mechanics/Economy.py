@@ -9,6 +9,7 @@ import asyncio
 from Core.Logger import Logger
 from Libs.Database import Database
 from Libs.utils.bot_utils import BotUtils
+from Libs.utils.gamble import Gamble
 
 # Load .env
 load_dotenv(".env")
@@ -179,7 +180,66 @@ class Economy(commands.Cog):
                     claimEmbed.add_field(name="**New balance**", value=f"${dailyCredit + userCredits}")
                     await ctx.send(embed=claimEmbed)
         else:
-            await ctx.send("🚫 You already claimed your daily credits!")
+            await ctx.send(f"{ctx.author.mention} You already claimed your daily credits! <:peepoMad:617113238328442958>")
+
+    # Gamble commands
+    @commands.group(pass_context=True)
+    async def gamble(self, ctx: commands.Context):
+        if ctx.invoked_subcommand == None:
+            await ctx.send(f"{ctx.author.mention} You need to specify which gamble game you want to play and how much money you want to bet! <:peepoCry:617113235459407894>")
+    
+    @gamble.group(pass_context=True)
+    async def slots(self, ctx: commands.Context, bet: str):
+        try:
+            bet = BotUtils.parseMoney(bet)
+        except:
+            await ctx.send(f"{ctx.author.mention} That's not a valid amount of money!")
+            return
+        if bet <= 0:
+            await ctx.send(f"{ctx.author.mention} You can't bet ${bet:,.2f}!")
+            return
+        userInfo = self.Database.GetFromTable("Users", f"ID = {ctx.author.id}")
+        userMoney = BotUtils.parseMoney(userInfo[0][3])
+        if bet > userMoney:
+            await ctx.send(f"{ctx.author.mention} You don't have enough money for that! <:peepoCry:617113235459407894>")
+            return
+        else:
+            slots = ["<:peepoCrying:617447775147261952>", "<:peepoWeird:617447776036454436>", "<:peepoSweat:617447775537201164>", "<:peepoMad:617113238328442958>", "<:peepoLove:617113236205993984>", "<:peepoHappy:617113235828637721>", "<:peepoCry:617113235459407894>", "<:peepoBlush:617113235489030144>"]
+            slotsMachine = discord.Embed(
+                title = "SLOTS MACHINE",
+                description = "**- Starting slots machine -**",
+                color = 0x9430FF
+                )
+            slotsMachineMessage = await ctx.send(embed=slotsMachine)
+            await asyncio.sleep(1.0)
+            for simSlots in range(5):
+                simulated = Gamble.SimulateSlots(slots, 3)
+                slotsMachine.description = f"{' | '.join(simulated)}"
+                await slotsMachineMessage.edit(embed=slotsMachine)
+                await asyncio.sleep(0.2)
+
+            # If all slots are equal, @user gets 2x the bet
+            if Gamble.slotsOutput(simulated) == 1:
+                bet *= 2
+                slotsMachine.add_field(name="**Results**", value=f"YOU WON ${bet:,.2f}!")
+            # If 2 slots are equal and 1 is different, 1.5x the bet
+            elif Gamble.slotsOutput(simulated) == 2:
+                bet *= 1.5
+                slotsMachine.add_field(name="**Results**", value=f"YOU WON ${bet:,.2f}!")
+            # If all slots are different, @user loses money pepeHands
+            else:
+                slotsMachine.add_field(name="**Results**", value=f"YOU LOST ${bet:,.2f} <:peepoCrying:617447775147261952>!")
+                bet *= -1
+            dbQuery = f"UPDATE Users SET credits = {userMoney + bet} WHERE ID = {ctx.author.id};"
+            if self.Database.CommitCommand(dbQuery):
+                await slotsMachineMessage.edit(embed=slotsMachine)
+            else:
+                slotsMachine.add_field(name="**Results**", value=f"Whoops, something went wrong! You didn't lose credits, so don't worry. Try gambling again later <:peepoCrying:617447775147261952>")
+                await slotsMachineMessage.edit(embed=slotsMachine)
+
+
+
+
 
 def setup(bot):
     bot.add_cog(Economy(bot))
