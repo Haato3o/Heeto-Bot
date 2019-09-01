@@ -88,21 +88,6 @@ class Level(commands.Cog):
         )
         await ctx.send(embed=rankingEmbed)
 
-    @level.command(pass_context=True)
-    async def help(self, ctx: commands.Context):
-        helpText = BotUtils.formatCommandsDict(self.Bot.command_prefix, self.LevelCommands)
-        levelHelp = discord.Embed(
-            title = None,
-            description = None,
-            timestamp = datetime.now(),
-            color = 0x9430FF
-        )
-        levelHelp.add_field(
-            name = "**Level subcommands**",
-            value = helpText
-        )
-        await ctx.send(embed=levelHelp)
-
     @staticmethod
     def IncreaseUserLevel(Database: Database, user: tuple, context: discord.Message):
         currentLevel = user[4]

@@ -6,24 +6,11 @@ These are the required steps you need to follow to set up Heeto bot on your own 
 
 ### Required
 - PostgreSQL database
-    - You can read more about databases Heeto currently uses by clicking [here](https://github.com/Haato3o/Heeto-Bot/tree/master/Libs/Database)
+    - You can read more about databases Heeto currently uses by clicking [here](https://github.com/Haato3o/Heeto-Bot/tree/master/Libs/Database).
 - Python 3.6 or later
 
 ## Commands
 
-#### Tera
-- **terastatus** *region*: Returns status of TERA servers (Default region is NA)
-
-#### Spiral Knights
-- **sk** *subcommand* *params*:
-    - **Available subcommands:**
-    - **gear** *gearName*: Returns info about *gearName*
-
-#### Misc
-- **echo** *message*: Makes the bot repeat the *message*.
-- **emojos** *message*: Turns the *message* into an emoji copypasta
-- **roll** *max*: Rolls the dice from 0 to *max* (Default = 20)"
-- **heart** *background* *foreground*: Creates a heart using emotes
-- **spam** *users*": Mentions *users* 3 times (up to 10 people)
+You can read about Heeto bot commands [here](http://heetobot.com/commands).
 
 ### Bot documentation soon:tm:

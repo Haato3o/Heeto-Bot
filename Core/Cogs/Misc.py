@@ -7,13 +7,6 @@ class Misc(commands.Cog):
     def __init__(self, bot):
         Logger.Log("Miscellaneous loaded!")
         self.bot:commands.Bot = bot
-        self.MiscCommands = {
-            "echo** *<message>*": "Makes the bot repeat the <message>.",
-            "emojos** *<message>*": "Turns the <message> into an emoji copypasta",
-            "roll** *<max>*" : "Rolls the dice from 0 to <max> (Default = 20)",
-            "heart** *<background>* *<foreground>*" : "Creates a heart using emotes",
-            "spam** *<users>*": "Mentions <users> 3 times (up to 10 people)"
-        }
     
     @commands.command(pass_context=True)
     @commands.cooldown(rate=1, per=4.0, type=commands.BucketType.channel)

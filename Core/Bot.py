@@ -17,6 +17,7 @@ load_dotenv(".env")
 class Bot(commands.Bot):
     def __init__(self, prefix: str, status_message: str):
         super().__init__(command_prefix=prefix)
+        self.remove_command("help")
         self.add_cog(Commands(self))
         self.statusMessage = status_message
         self.Database = Database(
@@ -27,13 +28,7 @@ class Bot(commands.Bot):
             db_name = os.getenv("DATABASE_NAME")
         )
         self.Database.connect()
-
-    @commands.command(pass_context=True)
-    async def help(self, ctx: commands.Context):
-        help_embed = discord.Embed(
-            title = "Help",
-            description = "You can check all commands available [here](http://heetobot.com/commands)"
-        )
+        
 
     async def on_member_join(self, member: discord.Member):
         '''
