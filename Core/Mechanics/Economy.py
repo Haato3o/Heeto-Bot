@@ -188,7 +188,9 @@ class Economy(commands.Cog):
         if ctx.invoked_subcommand == None:
             await ctx.send(f"{ctx.author.mention} You need to specify which gamble game you want to play and how much money you want to bet! <:peepoCry:617113235459407894>")
     
+    
     @gamble.group(pass_context=True)
+    @commands.cooldown(rate=2, per=3.0, type=commands.BucketType.member)
     async def slots(self, ctx: commands.Context, bet: str):
         try:
             bet = BotUtils.parseMoney(bet)
@@ -211,12 +213,11 @@ class Economy(commands.Cog):
                 color = 0x9430FF
                 )
             slotsMachineMessage = await ctx.send(embed=slotsMachine)
-            await asyncio.sleep(1.0)
-            for simSlots in range(5):
+            for simSlots in range(3):
                 simulated = Gamble.SimulateSlots(slots, 3)
                 slotsMachine.description = f"{' | '.join(simulated)}"
                 await slotsMachineMessage.edit(embed=slotsMachine)
-                await asyncio.sleep(0.2)
+                await asyncio.sleep(0.5)
 
             # If all slots are equal, @user gets 2x the bet
             if Gamble.slotsOutput(simulated) == 1:
