@@ -37,7 +37,7 @@ class Level(commands.Cog):
             "level ranking <global or server>**" : "Shows the people with highest level in server or globally. (Default is server)"
         }
     
-    @commands.group(pass_context=True, aliases="profile")
+    @commands.group(pass_context=True, aliases=["profile"])
     async def level(self, ctx: commands.Context):
         if ctx.invoked_subcommand == None:
             user = ctx.message.mentions[0] if len(ctx.message.mentions) > 0 else ctx.author
