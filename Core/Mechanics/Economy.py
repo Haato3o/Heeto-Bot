@@ -183,7 +183,7 @@ class Economy(commands.Cog):
             await ctx.send(f"{ctx.author.mention} You already claimed your daily credits! <:peepoMad:617113238328442958>")
 
     # Gamble commands
-    @commands.group(pass_context=True)
+    @commands.group(pass_context=True, aliases=["gambling"])
     async def gamble(self, ctx: commands.Context):
         if ctx.invoked_subcommand == None:
             await ctx.send(f"{ctx.author.mention} You need to specify which gamble game you want to play and how much money you want to bet! <:peepoCry:617113235459407894>")
@@ -222,14 +222,14 @@ class Economy(commands.Cog):
             # If all slots are equal, @user gets 2x the bet
             if Gamble.slotsOutput(simulated) == 1:
                 bet *= 2
-                slotsMachine.add_field(name="**Results**", value=f"YOU WON ${bet:,.2f}!")
+                slotsMachine.add_field(name="**Results**", value=f"YOU WON ${bet:,.2f}! <:peepoHappy:617113235828637721>")
             # If 2 slots are equal and 1 is different, 1.5x the bet
             elif Gamble.slotsOutput(simulated) == 2:
                 bet *= 1.5
-                slotsMachine.add_field(name="**Results**", value=f"YOU WON ${bet:,.2f}!")
+                slotsMachine.add_field(name="**Results**", value=f"YOU WON ${bet:,.2f}! <:peepoHappy:617113235828637721>")
             # If all slots are different, @user loses money pepeHands
             else:
-                slotsMachine.add_field(name="**Results**", value=f"YOU LOST ${bet:,.2f} <:peepoCrying:617447775147261952>!")
+                slotsMachine.add_field(name="**Results**", value=f"YOU LOST ${bet:,.2f}! <:peepoCrying:617447775147261952>")
                 bet *= -1
             dbQuery = f"UPDATE Users SET credits = {userMoney + bet} WHERE ID = {ctx.author.id};"
             if self.Database.CommitCommand(dbQuery):
