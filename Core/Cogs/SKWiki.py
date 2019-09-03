@@ -8,6 +8,12 @@ from Libs.utils.bot_utils import BotUtils
 import Libs.SkWiki as SkWiki
 
 class SKWiki(commands.Cog):
+    name = "spiralknights"
+    description = '''
+        This group has all commands related to the game Spiral Knights.
+    '''
+    color = "#FF8914"
+
     def __init__(self, bot):
         Logger.Log("SKWiki loaded!")
         self.bot:commands.Bot = bot
@@ -15,7 +21,7 @@ class SKWiki(commands.Cog):
             "sk gear** *<name>*" : "Returns info about weapon, armor, helm and shield"
         }
 
-    @commands.group(pass_context=True)
+    @commands.group(pass_context=True, help="<subcommand> <params>", usage="sk", description="A group of commands.")
     async def sk(self, ctx: commands.Context):
         if ctx.invoked_subcommand == None:
             helpText = BotUtils.formatCommandsDict(self.bot.command_prefix, self.SKHelp)
@@ -31,7 +37,7 @@ class SKWiki(commands.Cog):
             )
             await ctx.send(embed=SkHelpEmbed)
     
-    @sk.command(pass_context=True)
+    @sk.command(pass_context=True, help="<gear_name>", usage="sk gear Chaos Cloak", description="Returns info about gear from Spiral Knights")
     async def gear(self, ctx, *, gearName: str):
         gearQuery = SkWiki.Gear(gearName)
         if gearQuery.Exists():

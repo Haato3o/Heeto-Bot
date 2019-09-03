@@ -13,6 +13,12 @@ from Libs.utils.bot_utils import BotUtils
 load_dotenv('.env')
 
 class Family(commands.Cog):
+    name = "family"
+    description = '''
+        This group has all commands related to the family and marriage systems.
+    '''
+    color = "#9B26F0"
+
     MarriageCost = 1000
 
     def __init__(self, bot):
@@ -62,7 +68,7 @@ class Family(commands.Cog):
         return self.Database.CommitCommand(query1) and self.Database.CommitCommand(query2)
         
 
-    @commands.command(pass_context=True)
+    @commands.command(pass_context=True, help="<@user>", usage="marry @YourLove#0001", description="You can marry <@user> in exchange for some amount of credits.\n > NOTE: Both users must accept the marriage.")
     async def marry(self, ctx: commands.Context, target = None):
         try:
             target = int(target.strip("<!@>"))
@@ -120,7 +126,7 @@ class Family(commands.Cog):
         else:
             await ctx.send("You're married already! Use `~divorce` if you want to marry someone else.")
 
-    @commands.command(pass_context=True)
+    @commands.command(pass_context=True, help="None", usage="divorce", description="Divorces you from the person you're engaged with.")
     async def divorce(self, ctx: commands.Context):
         userQuery = self.Database.GetFromTable("Users", f"id = {ctx.author.id}")
         if userQuery[0][13] != None:

@@ -18,6 +18,11 @@ from Libs.utils.bot_utils import BotUtils
 load_dotenv(".env")
 
 class Level(commands.Cog):
+    name = "level"
+    description = '''
+        The level group contains all commands related to the levelling and experience systems.
+    '''
+    color = "#6DF96D"
     Experience_Cooldown = 60
     CalculateLevelFormula = lambda level: int((100 + (100 * level) * (level / 100)))
 
@@ -37,7 +42,7 @@ class Level(commands.Cog):
             "level ranking <global or server>**" : "Shows the people with highest level in server or globally. (Default is server)"
         }
     
-    @commands.group(pass_context=True, aliases=["profile"])
+    @commands.group(pass_context=True, help="<@user>*", usage="level @Haato#0704", description="Shows <user> user card. It'll show your own card if user is not specified.", aliases=["profile"])
     async def level(self, ctx: commands.Context):
         if ctx.invoked_subcommand == None:
             user = ctx.message.mentions[0] if len(ctx.message.mentions) > 0 else ctx.author
@@ -71,7 +76,7 @@ class Level(commands.Cog):
             )
             await ctx.send(embed=userLevelEmbed)
 
-    @level.command(pass_context=True)
+    @level.command(pass_context=True, help="<global or server>*", usage="level ranking global", description="Shows the people with highest level in server or globally.")
     async def ranking(self, ctx: commands.Context, rankingType: str = "server"):
         if rankingType not in ["server", "global"]:
             rankingType = "server"

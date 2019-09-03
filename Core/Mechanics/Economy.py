@@ -15,6 +15,12 @@ from Libs.utils.gamble import Gamble
 load_dotenv(".env")
 
 class Economy(commands.Cog):
+    name = "economy"
+    description = '''
+        This group has all commands related to the economy. Including daily credits commands and money management commands and gambling.
+    '''
+    color = "#CD56FF"
+
     DailyStreak = {
         0 : 250,
         1 : 300,
@@ -24,6 +30,7 @@ class Economy(commands.Cog):
         5 : 700,
         6 : 1000
     }
+
     def __init__(self, bot):
         self.Bot: commands.Bot = bot
         Logger.Log("Economy mechanics loaded!")
@@ -59,12 +66,12 @@ class Economy(commands.Cog):
                 return False
 
 
-    @commands.group(pass_context=True)
+    @commands.group(pass_context=True, help="<subcommand params>", usage="money", description="A group of commands.")
     async def money(self, ctx: commands.Context):
         if ctx.invoked_subcommand == None:
             await ctx.send("This is a placeholder btw, gonna change this later")
 
-    @money.command(pass_context=True)
+    @money.command(pass_context=True, help="<@user> <amount>", usage="money send @Haato#0704 $1000", description="Sends <@user> <amount> from your balance.")
     async def send(self, ctx: commands.Context, to_user = None, amount = None):
         try:
             amount = BotUtils.parseMoney(amount)
@@ -148,7 +155,7 @@ class Economy(commands.Cog):
         else:
             await ctx.send(f"{ctx.author.id} You don't have that much money!")
 
-    @commands.command(pass_context=True)
+    @commands.command(pass_context=True, help="None", usage="balance", description="Shows your credits balance.")
     async def balance(self, ctx: commands.Context):
         dbQuery = self.Database.GetFromTable("Users", f"ID = {ctx.author.id}")
         currencyEmbed = discord.Embed(
@@ -158,7 +165,7 @@ class Economy(commands.Cog):
             )
         await ctx.send(embed=currencyEmbed)
     
-    @commands.command(pass_context=True)
+    @commands.command(pass_context=True, help="None", usage="daily", description="Claims your daily amount of credits. The higher your streak the more you get! (Up to 7 days in a row)")
     async def daily(self, ctx: commands.Context):
         dbQuery = self.Database.GetFromTable("Users", f"ID = {ctx.author.id}")
         lastClaim = (datetime.date(datetime.now()) - dbQuery[0][6])
@@ -183,13 +190,13 @@ class Economy(commands.Cog):
             await ctx.send(f"{ctx.author.mention} You already claimed your daily credits! <:peepoMad:617113238328442958>")
 
     # Gamble commands
-    @commands.group(pass_context=True, aliases=["gambling"])
+    @commands.group(pass_context=True, help="<subcommand> <subcommand params>", usage="gamble", description="Shows available gambling games!", aliases=["gambling"])
     async def gamble(self, ctx: commands.Context):
         if ctx.invoked_subcommand == None:
             await ctx.send(f"{ctx.author.mention} You need to specify which gamble game you want to play and how much money you want to bet! <:peepoCry:617113235459407894>")
     
     
-    @gamble.group(pass_context=True)
+    @gamble.group(pass_context=True, help="<bet>", usage="gamble slots $1000", description="Gambling slot machine!\n3 symbols = 2x bet\n2 symbols = 1.5x bet")
     @commands.cooldown(rate=2, per=3.0, type=commands.BucketType.member)
     async def slots(self, ctx: commands.Context, bet: str):
         try:
@@ -197,8 +204,8 @@ class Economy(commands.Cog):
         except:
             await ctx.send(f"{ctx.author.mention} That's not a valid amount of money!")
             return
-        if bet <= 0:
-            await ctx.send(f"{ctx.author.mention} You can't bet ${bet:,.2f}!")
+        if bet < 10:
+            await ctx.send(f"{ctx.author.mention} You can't bet ${bet:,.2f}! The minimum bet is $10")
             return
         userInfo = self.Database.GetFromTable("Users", f"ID = {ctx.author.id}")
         userMoney = BotUtils.parseMoney(userInfo[0][3])
@@ -221,8 +228,8 @@ class Economy(commands.Cog):
 
             # If all slots are equal, @user gets 2x the bet
             if Gamble.slotsOutput(simulated) == 1:
-                bet *= 2
-                slotsMachine.add_field(name="**Results**", value=f"YOU WON ${bet:,.2f}! <:peepoHappy:617113235828637721>")
+                bet *= 3
+                slotsMachine.add_field(name="**Results**", value=f"💰 JACKPOT!!! YOU WON ${bet:,.2f}! <:peepoHappy:617113235828637721>")
             # If 2 slots are equal and 1 is different, 1.5x the bet
             elif Gamble.slotsOutput(simulated) == 2:
                 bet *= 1.5
@@ -237,10 +244,6 @@ class Economy(commands.Cog):
             else:
                 slotsMachine.add_field(name="**Results**", value=f"Whoops, something went wrong! You didn't lose credits, so don't worry. Try gambling again later <:peepoCrying:617447775147261952>")
                 await slotsMachineMessage.edit(embed=slotsMachine)
-
-
-
-
 
 def setup(bot):
     bot.add_cog(Economy(bot))

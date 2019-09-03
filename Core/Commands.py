@@ -1,7 +1,9 @@
 from discord.ext import commands
 from discord.ext.commands import core
 import discord
+
 from Core.Logger import Logger
+from Libs.utils.bot_utils import BotUtils
 
 class Commands(commands.Cog):
     def __init__(self, bot):
@@ -12,7 +14,6 @@ class Commands(commands.Cog):
 
     @commands.command(pass_context=True)
     async def help(self, ctx: commands.Context, *cogs):
-        # cog:core.Group = self.bot.cogs['Level'].get_commands()[0]
         availableGroups = list(self.bot.cogs.keys())
         availableGroups.remove("Admin")
         if len(cogs) == 0:
@@ -21,6 +22,7 @@ class Commands(commands.Cog):
                 description = '''
                     You can check all commands available [here](http://heetobot.com/commands).
                     Type help <group> to read more about an specific command group.
+                    > **Note:** Groups and commands are case-sensitive.
                     ''',
                 color = 0x9430FF
             )
@@ -30,6 +32,72 @@ class Commands(commands.Cog):
             )
             help_embed.set_thumbnail(url=self.bot.user.avatar_url)
             await ctx.send(embed=help_embed)
+        else:
+            if cogs[0] in availableGroups:
+                groupChosen: commands.Cog = self.bot.cogs[cogs[0]]
+                availableCommands = groupChosen.get_commands()
+                if len(cogs) < 2:
+                    groupEmbed = discord.Embed(
+                        title = f"{cogs[0]}",
+                        description = f"**Description: ** {groupChosen.description}\nType [prefix]help {cogs[0]} <command> to read more about an specific command.",
+                        color = BotUtils.parseColorFromString(groupChosen.color)
+                    )
+                    groupEmbed.set_footer(
+                        text = f"http://heetobot.com/commands/{groupChosen.name}",
+                        icon_url = self.bot.user.avatar_url
+                    )
+                    groupEmbed.add_field(
+                        name = "**AVAILABLE COMMANDS**",
+                        value = ", ".join([commands.name for commands in availableCommands])
+                    )
+                    await ctx.send(embed=groupEmbed)
+                else:
+                    if cogs[1] in [commands.name for commands in availableCommands]:
+                        commandIndex = [commands.name for commands in availableCommands].index(cogs[1])
+                        commandChosen: core.Group = availableCommands[commandIndex]
+                        try:
+                            hasSubcommands = True
+                            if len(cogs) > 2:
+                                subcommands = commandChosen.all_commands
+                                commandChosen = subcommands.get(cogs[2])
+                                hasSubcommands = len(subcommands) == 0
+                                if cogs[2] not in subcommands:
+                                    await ctx.send("No subcommand has that name <:peepoCrying:617447775147261952>")
+                                    return
+                        except:
+                            hasSubcommands = False
+                            commandIndex = [commands.name for commands in availableCommands].index(cogs[1])
+                            commandChosen: core.Group = availableCommands[commandIndex]
+                        commandEmbed = discord.Embed(
+                            title = f"{' > '.join(cogs)}",
+                            description = f"**Description:** {commandChosen.description}",
+                            color = BotUtils.parseColorFromString(groupChosen.color)
+                        )
+                        commandEmbed.add_field(
+                            name = "**Parameters**",
+                            value = commandChosen.help
+                        )
+                        commandEmbed.add_field(
+                            name = "**Usage**",
+                            value = commandChosen.usage,
+                            inline = False
+                        )
+                        commandEmbed.add_field(
+                            name = "**Aliases**",
+                            value = ", ".join(commandChosen.aliases) if len(commandChosen.aliases) > 0 else "None"
+                        )
+                        if hasSubcommands:
+                            commandEmbed.add_field(
+                                name = "**Subcommands**",
+                                value = ", ".join(commandChosen.all_commands),
+                                inline = False
+                            )
+                        await ctx.send(embed=commandEmbed)
+                    else:
+                        await ctx.send(f"No command called **{cogs[1]}** in {cogs[0]}")
+            else:
+                await ctx.send(f"No command group called {cogs[0]}")
+                return
 
     def LoadAllCogs(self):
         Cogs = [

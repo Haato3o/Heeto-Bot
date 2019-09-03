@@ -10,11 +10,8 @@ class Tera(commands.Cog):
     def __init__(self, bot):
         Logger.Log("Tera loaded!")
         self.bot: commands.Bot = bot
-        self.teraCommands = {
-            "terastatus** *<region>*" : "Returns information about server in <region>"
-        }
 
-    @commands.command(pass_context=True)
+    @commands.command(pass_context=True, help="<region>*", usage="terastatus eu", description="Returns information about server in <region>. (Default is NA)")
     async def terastatus(self, ctx: commands.Context, region: str = 'na'):
         Status = TeraStatus.Servers.GetTeraStatus(region)
         if len(Status) == 0:
@@ -27,16 +24,6 @@ class Tera(commands.Cog):
             color = 0x9430FF
         )
         await ctx.send(embed=StatusEmbed)
-
-    @commands.group(pass_context=True)
-    async def tera(self, ctx: commands.Context):
-        if ctx.invoked_subcommand == None:
-            teraHelpEmbed = discord.Embed(
-                title = "Tera subcommands",
-                description = BotUtils.formatCommandsDict(self.teraCommands),
-                color = 0x9430FF
-            )
-            await ctx.send(embed = teraHelpEmbed)
 
 def setup(bot):
     bot.add_cog(Tera(bot))
