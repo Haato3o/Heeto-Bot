@@ -6,13 +6,17 @@ from Core.Logger import Logger
 from Libs.utils.bot_utils import BotUtils
 
 class Commands(commands.Cog):
+    name = "core"
+    description = "Contains all core commands."
+    color = "#E685E0"
+
     def __init__(self, bot):
         Logger.Log("Basic commands loaded!")
         self.bot:commands.Bot = bot
         self.LoadAllCogs()
         
 
-    @commands.command(pass_context=True)
+    @commands.command(pass_context=True, help="<command group>", usage="help Level level ranking", description="Shows information about commands and command groups and how to use them.")
     async def help(self, ctx: commands.Context, *cogs):
         availableGroups = list(self.bot.cogs.keys())
         availableGroups.remove("Admin")
