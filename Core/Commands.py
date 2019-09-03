@@ -61,8 +61,8 @@ class Commands(commands.Cog):
                         commandChosen: core.Group = availableCommands[commandIndex]
                         try:
                             hasSubcommands = True
+                            subcommands = commandChosen.all_commands
                             if len(cogs) > 2:
-                                subcommands = commandChosen.all_commands
                                 commandChosen = subcommands.get(cogs[2])
                                 hasSubcommands = len(subcommands) == 0
                                 if cogs[2] not in subcommands:
