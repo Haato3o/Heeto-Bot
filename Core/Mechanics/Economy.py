@@ -213,7 +213,7 @@ class Economy(commands.Cog):
             await ctx.send(f"{ctx.author.mention} You don't have enough money for that! <:peepoCry:617113235459407894>")
             return
         else:
-            slots = ["<:peepoCrying:617447775147261952>", "<:peepoWeird:617447776036454436>", "<:peepoSweat:617447775537201164>", "<:peepoMad:617113238328442958>", "<:peepoLove:617113236205993984>", "<:peepoHappy:617113235828637721>", "<:peepoCry:617113235459407894>", "<:peepoBlush:617113235489030144>"]
+            slots = ["<:peepoCrying:617447775147261952>", "<:peepoSweat:617447775537201164>", "<:peepoLove:617113236205993984>", "<:peepoHappy:617113235828637721>", "<:peepoBlush:617113235489030144>"]
             slotsMachine = discord.Embed(
                 title = "SLOTS MACHINE",
                 description = "**- Starting slots machine -**",
