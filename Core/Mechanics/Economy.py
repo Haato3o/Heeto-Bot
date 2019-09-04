@@ -153,7 +153,7 @@ class Economy(commands.Cog):
                 await confirmation.edit(content="Transaction cancelled!")
                 return
         else:
-            await ctx.send(f"{ctx.author.id} You don't have that much money!")
+            await ctx.send(f"{ctx.author.mention} You don't have that much money!")
 
     @commands.command(pass_context=True, help="None", usage="balance", description="Shows your credits balance.")
     async def balance(self, ctx: commands.Context):
