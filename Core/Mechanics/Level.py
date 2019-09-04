@@ -59,7 +59,7 @@ class Level(commands.Cog):
             )
             userLevelEmbed.add_field(
                 name = "**BADGES**",
-                value = ' '.join(userQuery[0][14]),
+                value = ' '.join(userQuery[0][14]) if len(userQuery[0][14]) > 0 else "You have no badges yet.",
                 inline = False
             )
             userLevelEmbed.add_field(
