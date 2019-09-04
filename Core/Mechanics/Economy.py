@@ -223,9 +223,11 @@ class Economy(commands.Cog):
             for simSlots in range(3):
                 simulated = Gamble.SimulateSlots(slots, 3)
                 if simSlots == 2:
-                    jackpot_rng = randint(0, 100000)
+                    jackpot_rng = randint(0, 10000)
                     if jackpot_rng == 1:
                         simulated = ["<:peepoJackpot:618839207418396682>", "<:peepoJackpot:618839207418396682>", "<:peepoJackpot:618839207418396682>"]
+                    else:
+                        simulated = ["<:peepoCrying:617447775147261952>", "<:peepoCrying:617447775147261952>", "<:peepoCrying:617447775147261952>"]
                 slotsMachine.description = f"{' | '.join(simulated)}"
                 await slotsMachineMessage.edit(embed=slotsMachine)
                 await asyncio.sleep(0.5)
@@ -233,10 +235,10 @@ class Economy(commands.Cog):
             # If all slots are equal, @user gets 2x the bet
             if Gamble.slotsOutput(simulated) == 1:
                 if simulated[0] == "<:peepoJackpot:618839207418396682>":
-                    newBet *= 10
+                    newBet = bet * 10
                     slotsMachine.add_field(name="**Results**", value=f"DING DING DING! Jackpot! You just won 10x your bet! Added ${bet + newBet:,.2f} to your balance! <:peepoJackpot:618839207418396682>")
                 else:  
-                    newBet *= 1
+                    newBet = bet * 1
                     slotsMachine.add_field(name="**Results**", value=f"YOU WON ${bet + newBet:,.2f}! <:peepoHappy:617113235828637721>")
             # If 2 slots are equal and 1 is different, 1.5x the bet
             elif Gamble.slotsOutput(simulated) == 2:
