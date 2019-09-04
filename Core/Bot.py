@@ -56,7 +56,8 @@ class Bot(commands.Bot):
                     cardColor = "#FFFFFF",
                     discriminator = user.discriminator,
                     avatar = str(user.avatar_url).replace("webp?size=1024", "png"),
-                    married_to = "null"
+                    married_to = "null",
+                    Badges = "{ }"
                 )
         if not addUserToDatabase:
             # This happens if Heeto fails to add user to database (Usually because user is already in the db).

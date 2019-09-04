@@ -58,6 +58,11 @@ class Level(commands.Cog):
                 color = userColor
             )
             userLevelEmbed.add_field(
+                name = "**BADGES**",
+                value = ' '.join(userQuery[0][14]),
+                inline = False
+            )
+            userLevelEmbed.add_field(
                 name = "**LEVEL**",
                 value = userQuery[0][4],
                 inline = True

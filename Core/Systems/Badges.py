@@ -3,4 +3,4 @@
 '''
 
 class Badges():
-    OWNER = "<:BADGE_Owner:618828215095525377>"
+    OWNER = "<a:BADGE_Owner:618828215095525377>"
