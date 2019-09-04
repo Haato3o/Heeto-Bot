@@ -175,7 +175,7 @@ class Economy(commands.Cog):
             streak = streak if lastClaim.days == 1 else 0
             if streak < 7:
                 dailyCredit = Economy.DailyStreak.get(streak)
-                newStreak = streak + 1 if streak <= 5 else 0
+                newStreak = streak + 1 if streak < (len(Economy.DailyStreak) - 1) else 0
                 query = f'''
                     UPDATE Users SET Credits = {userCredits + dailyCredit},
                                         last_day_streak = '{BotUtils.GetDate()}',
@@ -213,7 +213,7 @@ class Economy(commands.Cog):
             await ctx.send(f"{ctx.author.mention} You don't have enough money for that! <:peepoCry:617113235459407894>")
             return
         else:
-            slots = ["<:peepoCrying:617447775147261952>", "<:peepoSweat:617447775537201164>", "<:peepoLove:617113236205993984>", "<:peepoHappy:617113235828637721>", "<:peepoBlush:617113235489030144>"]
+            slots = ["<:peepoCrying:617447775147261952>", "<:peepoSweat:617447775537201164>", "<:peepoLove:618828609569816597>", "<:peepoHappy:617113235828637721>", "<:peepoBlush:617113235489030144>"]
             slotsMachine = discord.Embed(
                 title = "SLOTS MACHINE",
                 description = "**- Starting slots machine -**",
@@ -222,17 +222,25 @@ class Economy(commands.Cog):
             slotsMachineMessage = await ctx.send(embed=slotsMachine)
             for simSlots in range(3):
                 simulated = Gamble.SimulateSlots(slots, 3)
+                if simSlots == 2:
+                    jackpot_rng = randint(0, 100000)
+                    if jackpot_rng == 1:
+                        simulated = ["<:peepoJackpot:618839207418396682>", "<:peepoJackpot:618839207418396682>", "<:peepoJackpot:618839207418396682>"]
                 slotsMachine.description = f"{' | '.join(simulated)}"
                 await slotsMachineMessage.edit(embed=slotsMachine)
                 await asyncio.sleep(0.5)
 
             # If all slots are equal, @user gets 2x the bet
             if Gamble.slotsOutput(simulated) == 1:
-                bet *= 3
-                slotsMachine.add_field(name="**Results**", value=f"💰 JACKPOT!!! YOU WON ${bet:,.2f}! <:peepoHappy:617113235828637721>")
+                if simulated[0] == "<:peepoJackpot:618839207418396682>":
+                    bet *= 10
+                    slotsMachine.add_field(name="**Results**", value=f"DING DING DING! Jackpot! You just won 10x your bet! Added ${bet:,.2f} to your balance! <:peepoJackpot:618839207418396682>")
+                else:  
+                    bet *= 2.5
+                    slotsMachine.add_field(name="**Results**", value=f"YOU WON ${bet:,.2f}! <:peepoHappy:617113235828637721>")
             # If 2 slots are equal and 1 is different, 1.5x the bet
             elif Gamble.slotsOutput(simulated) == 2:
-                bet *= 1.5
+                bet *= 1.4
                 slotsMachine.add_field(name="**Results**", value=f"YOU WON ${bet:,.2f}! <:peepoHappy:617113235828637721>")
             # If all slots are different, @user loses money pepeHands
             else:

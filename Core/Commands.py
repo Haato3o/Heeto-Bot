@@ -73,7 +73,7 @@ class Commands(commands.Cog):
                             commandIndex = [commands.name for commands in availableCommands].index(cogs[1])
                             commandChosen: core.Group = availableCommands[commandIndex]
                         commandEmbed = discord.Embed(
-                            title = f"{' > '.join(cogs)}",
+                            title = f"{' > '.join(cogs[0: 3])}",
                             description = f"**Description:** {commandChosen.description}",
                             color = BotUtils.parseColorFromString(groupChosen.color)
                         )
