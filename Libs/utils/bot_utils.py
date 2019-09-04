@@ -23,13 +23,13 @@ class BotUtils():
         return int(color, 16)
 
     @staticmethod
-    def parseMoney(money: str) -> int:
+    def parseMoney(money: str) -> float:
         '''
             Parses money from string format to int
             :param money: Money (ex: $500.0)
-            :return: Int (ex: 500)
+            :return: Float (ex: 500)
         '''
-        return int(float(money.strip("$").replace(",", "")))
+        return float(money.strip("$").replace(",", ""))
 
     @staticmethod
     def isPublicChannel(channel_type) -> bool:

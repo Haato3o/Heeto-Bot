@@ -197,7 +197,7 @@ class Economy(commands.Cog):
     
     
     @gamble.group(pass_context=True, help="<bet>", usage="gamble slots $1000", description="Gambling slot machine!\n3 symbols = 2x bet\n2 symbols = 1.5x bet")
-    @commands.cooldown(rate=2, per=3.0, type=commands.BucketType.member)
+    @commands.cooldown(rate=2, per=3.0, type=commands.BucketType.channel)
     async def slots(self, ctx: commands.Context, bet: str):
         try:
             bet = BotUtils.parseMoney(bet)
@@ -233,20 +233,20 @@ class Economy(commands.Cog):
             # If all slots are equal, @user gets 2x the bet
             if Gamble.slotsOutput(simulated) == 1:
                 if simulated[0] == "<:peepoJackpot:618839207418396682>":
-                    bet *= 10
-                    slotsMachine.add_field(name="**Results**", value=f"DING DING DING! Jackpot! You just won 10x your bet! Added ${bet:,.2f} to your balance! <:peepoJackpot:618839207418396682>")
+                    newBet *= 10
+                    slotsMachine.add_field(name="**Results**", value=f"DING DING DING! Jackpot! You just won 10x your bet! Added ${bet + newBet:,.2f} to your balance! <:peepoJackpot:618839207418396682>")
                 else:  
-                    bet *= 2.5
-                    slotsMachine.add_field(name="**Results**", value=f"YOU WON ${bet:,.2f}! <:peepoHappy:617113235828637721>")
+                    newBet *= 1
+                    slotsMachine.add_field(name="**Results**", value=f"YOU WON ${bet + newBet:,.2f}! <:peepoHappy:617113235828637721>")
             # If 2 slots are equal and 1 is different, 1.5x the bet
             elif Gamble.slotsOutput(simulated) == 2:
-                bet *= 1.4
-                slotsMachine.add_field(name="**Results**", value=f"YOU WON ${bet:,.2f}! <:peepoHappy:617113235828637721>")
+                newBet = bet * 0.5
+                slotsMachine.add_field(name="**Results**", value=f"YOU WON ${bet + newBet:,.2f}! <:peepoHappy:617113235828637721>")
             # If all slots are different, @user loses money pepeHands
             else:
                 slotsMachine.add_field(name="**Results**", value=f"YOU LOST ${bet:,.2f}! <:peepoCrying:617447775147261952>")
-                bet *= -1
-            dbQuery = f"UPDATE Users SET credits = {userMoney + bet} WHERE ID = {ctx.author.id};"
+                newBet = bet * (-1)
+            dbQuery = f"UPDATE Users SET credits = {userMoney + newBet} WHERE ID = {ctx.author.id};"
             if self.Database.CommitCommand(dbQuery):
                 await slotsMachineMessage.edit(embed=slotsMachine)
             else:
