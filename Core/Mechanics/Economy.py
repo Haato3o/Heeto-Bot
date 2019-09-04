@@ -226,8 +226,6 @@ class Economy(commands.Cog):
                     jackpot_rng = randint(0, 10000)
                     if jackpot_rng == 1:
                         simulated = ["<:peepoJackpot:618839207418396682>", "<:peepoJackpot:618839207418396682>", "<:peepoJackpot:618839207418396682>"]
-                    else:
-                        simulated = ["<:peepoCrying:617447775147261952>", "<:peepoCrying:617447775147261952>", "<:peepoCrying:617447775147261952>"]
                 slotsMachine.description = f"{' | '.join(simulated)}"
                 await slotsMachineMessage.edit(embed=slotsMachine)
                 await asyncio.sleep(0.5)
