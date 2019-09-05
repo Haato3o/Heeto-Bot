@@ -86,7 +86,7 @@ class Database():
         '''
         query = f'''
             INSERT INTO {tableName} VALUES {tuple(kwargs.values())};
-        '''
+        '''.replace("'null'", "null")
         if self.isConnected():
             try:
                 self.Cursor.execute(query)

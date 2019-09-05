@@ -56,7 +56,7 @@ class Bot(commands.Bot):
                     cardColor = "#FFFFFF",
                     discriminator = user.discriminator,
                     avatar = str(user.avatar_url).replace("webp?size=1024", "png"),
-                    married_to = None,
+                    married_to = "null",
                     Badges = "{ }"
                 )
         if not addUserToDatabase:
