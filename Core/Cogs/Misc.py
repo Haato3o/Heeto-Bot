@@ -17,6 +17,8 @@ class Misc(commands.Cog):
     @commands.command(pass_context=True, help="<@users>", usage="spam @user#0001 @user#0002", description="Mentions <@users> 3 times (up to 10 people at once)")
     @commands.cooldown(rate=1, per=4.0, type=commands.BucketType.channel)
     async def spam(self, ctx: commands.Context):
+        if ctx.guild.id == 338120570530955264:
+            return
         message: commands.Context.message = ctx.message
         if ctx.message.mention_everyone:
             await ctx.send("You can't spam everyone")
@@ -38,6 +40,8 @@ class Misc(commands.Cog):
     @commands.command(pass_context=True, help="<message>", usage="emojos This is a copypasta peepoHappy", description="Turns the <message> into an emoji copypasta")
     @commands.cooldown(rate=2, per=5.0, type=commands.BucketType.guild)
     async def emojos(self, ctx: commands.Context, *, message: str):
+        if ctx.guild.id == 338120570530955264:
+            return
         listEmojos = ["😂", "🤔", "😐", "😍", "😴", "😡", "👌", "👊", "👀", "👅", "🍆", "💦"]
         finalResult = [random.choice(listEmojos)]
         messageWords = message.split(" ")
