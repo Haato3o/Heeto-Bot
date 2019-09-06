@@ -197,7 +197,7 @@ class Economy(commands.Cog):
     
     
     @gamble.group(pass_context=True, help="<bet>", usage="gamble slots $1000", description="Gambling slot machine!\n3 symbols = 2x bet\n2 symbols = 1.5x bet")
-    @commands.cooldown(rate=1, per=4.0, type=commands.BucketType.channel)
+    @commands.cooldown(rate=1, per=3.0, type=commands.BucketType.channel)
     async def slots(self, ctx: commands.Context, bet: str):
         try:
             bet = BotUtils.parseMoney(bet)
