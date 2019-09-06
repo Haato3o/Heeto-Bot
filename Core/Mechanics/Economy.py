@@ -221,7 +221,7 @@ class Economy(commands.Cog):
                 )
             slotsMachineMessage = await ctx.send(embed=slotsMachine)
             for simSlots in range(3):
-                simulated = Gamble.SimulateSlots(slots, 3)
+                simulated = Gamble.SimulateSlots(slots, 4)
                 if simSlots == 2:
                     jackpot_rng = randint(0, 10000)
                     if jackpot_rng == 1:
