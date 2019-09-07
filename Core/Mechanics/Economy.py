@@ -1,8 +1,9 @@
 import discord
 from discord.ext import commands
 import os
+import time
 from dotenv import load_dotenv
-from datetime import datetime
+from datetime import datetime, timedelta
 from random import randint, choice
 import asyncio
 
@@ -192,7 +193,10 @@ class Economy(commands.Cog):
                     claimEmbed.add_field(name="**New balance**", value=f"${dailyCredit + userCredits}")
                     await ctx.send(embed=claimEmbed)
         else:
-            await ctx.send(f"{ctx.author.mention} You already claimed your daily credits! <:peepoMad:617113238328442958>")
+            now = datetime.utcnow()
+            resetTime = (now + timedelta(days=1)).replace(hour=0, minute=0, second=0)
+            timeUntilReset = time.strftime("%H hours, %M minutes, %S seconds", time.gmtime(((resetTime - now).seconds)))
+            await ctx.send(f"{ctx.author.mention} You already claimed your daily credits <:peepoMad:617113238328442958>! Dailies reset everyday at 00:00 AM UTC! You can claim it again in **{timeUntilReset}**! ")
 
     # Gamble commands
     @commands.group(pass_context=True, help="<subcommand> <subcommand params>", usage="gamble", description="Shows available gambling games!", aliases=["gambling"])
