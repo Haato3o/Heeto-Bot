@@ -243,7 +243,7 @@ class Economy(commands.Cog):
                     description = f"You chose **{side.lower()}** and got **{toss}**\n{description}",
                     color = 0x9430FF
                 )
-                coinEmbed.set_image(url=Economy.Coins.get(toss))
+                coinEmbed.set_thumbnail(url=Economy.Coins.get(toss))
                 await ctx.send(embed=coinEmbed)
             else:
                 await ctx.send("Something went wrong and I couldn't update your credits! Try again later... <:peepoCry:617113235459407894>")
