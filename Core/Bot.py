@@ -34,11 +34,18 @@ class Bot(commands.Bot):
         '''
             Creates an user entry in the database whenever a member joins the server
         '''
-        user: discord.User = await self.get_user(member.id)
+        user: discord.User = self.get_user(member.id)
         if not user.bot:
             # Inserts the user into Heeto's database
             # Since ID is a primary key it will just raise an error when trying to insert it if it's already in the db
             self.AddUserToDatabase(user, member.guild)
+
+    async def on_member_remove(self, member: discord.Member):
+        user: discord.User = self.get_user(member.id)
+        if not user.bot:
+            query = f"UPDATE Users SET Servers = array_remove(Servers, {member.guild.id}) WHERE ID = {user.id};"
+            if self.Database.CommitCommand(query):
+                Logger.Log(f"Updated user: {user.name}")
 
     def AddUserToDatabase(self, user, guild):
         addUserToDatabase = self.Database.AddToTable(
@@ -82,7 +89,6 @@ class Bot(commands.Bot):
             # For each member in the server, creates an entry in Heeto's database
             if not user.bot:
                 self.AddUserToDatabase(user, guild)
-                
 
     async def on_ready(self):
         Logger.Log(f"{self.user.name} is now connected to Discord!")
