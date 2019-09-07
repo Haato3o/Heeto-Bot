@@ -84,12 +84,10 @@ class Database():
             :param kwargs: Table column values
             :return: True if values were added, false if not
         '''
-        query = f'''
-            INSERT INTO {tableName} VALUES {tuple(kwargs.values())};
-        '''.replace("'null'", "null")
+        queryBase = f"INSERT INTO {tableName} VALUES ({', '.join(['%s' for arg in range(len(kwargs))])})"
         if self.isConnected():
             try:
-                self.Cursor.execute(query)
+                self.Cursor.execute(queryBase, tuple(kwargs.values()))
                 self.Connection.commit()
                 Logger.Log(f"Added {tuple(kwargs.values())} to {tableName}")
                 return True

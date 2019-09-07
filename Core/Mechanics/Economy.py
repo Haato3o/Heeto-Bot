@@ -271,7 +271,7 @@ class Economy(commands.Cog):
             await ctx.send(f"{ctx.author.mention} You don't have enough money for that! <:peepoCry:617113235459407894>")
             return
         else:
-            slots = ["<:peepoCrying:617447775147261952>", "<:peepoSweat:617447775537201164>", "<:peepoLove:618828609569816597>", "<:peepoHappy:617113235828637721>", "<:peepoBlush:617113235489030144>", "<:peepoCry:617113235459407894>"]
+            slots = ["<:peepoCrying:617447775147261952>", "<:peepoSweat:617447775537201164>", "<:peepoLove:618828609569816597>", "<:peepoHappy:617113235828637721>", "<:peepoBlush:617113235489030144>"]
             slotsMachine = discord.Embed(
                 title = "SLOTS MACHINE",
                 description = "**- Starting slots machine -**",
@@ -281,7 +281,7 @@ class Economy(commands.Cog):
             for simSlots in range(3):
                 simulated = Gamble.SimulateSlots(slots, 3)
                 if simSlots == 2:
-                    jackpot_rng = randint(0, 10000)
+                    jackpot_rng = randint(0, 1000)
                     if jackpot_rng == 1:
                         simulated = ["<:peepoJackpot:618839207418396682>", "<:peepoJackpot:618839207418396682>", "<:peepoJackpot:618839207418396682>"]
                 slotsMachine.description = f"{' | '.join(simulated)}"
