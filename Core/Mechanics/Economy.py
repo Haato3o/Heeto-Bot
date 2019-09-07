@@ -3,7 +3,7 @@ from discord.ext import commands
 import os
 from dotenv import load_dotenv
 from datetime import datetime
-from random import randint
+from random import randint, choice
 import asyncio
 
 from Core.Logger import Logger
@@ -20,6 +20,11 @@ class Economy(commands.Cog):
         This group has all commands related to the economy. Including daily credits commands and money management commands and gambling.
     '''
     color = "#CD56FF"
+
+    Coins = {
+        "tails" : "https://cdn.discordapp.com/attachments/619705602519728138/619705640796946461/coin_tails.gif",
+        "heads" : "https://cdn.discordapp.com/attachments/619705602519728138/619705624430641152/badge_heetocoin.gif"
+    }
 
     DailyStreak = {
         0 : 250,
@@ -193,10 +198,57 @@ class Economy(commands.Cog):
     @commands.group(pass_context=True, help="<subcommand> <subcommand params>", usage="gamble", description="Shows available gambling games!", aliases=["gambling"])
     async def gamble(self, ctx: commands.Context):
         if ctx.invoked_subcommand == None:
-            await ctx.send(f"{ctx.author.mention} You need to specify which gamble game you want to play and how much money you want to bet! <:peepoCry:617113235459407894>")
+            await ctx.send(f'''
+            {ctx.author.mention} You need to specify which gamble game you want to play and how much money you want to bet! <:peepoCry:617113235459407894>
+            Available games:
+            ```\n~gamble slots\n~gamble coin```
+            ''')
     
-    
-    @gamble.group(pass_context=True, help="<bet>", usage="gamble slots $1000", description="Gambling slot machine!\n3 symbols = 2x bet\n2 symbols = 1.5x bet")
+    @gamble.group(pass_context=True, help="<heads or tails> <bet>", usage="gamble coin $1000", description="Coin toss!", aliases=["coins"])
+    @commands.cooldown(rate=2, per=2.0, type=commands.BucketType.channel)
+    async def coin(self, ctx: commands.Context, side: str = "None", bet: str = None):
+        if not side.endswith("s"):
+            side = f"{side}s"
+        if side.lower() not in ["heads", "tails"]:
+            await ctx.send(f"Command usage:\n~gamble coin <heads or tails> <bet>")
+            return
+        try:
+            bet = BotUtils.parseMoney(bet)
+        except:
+            await ctx.send(f"{ctx.author.mention} That's not a valid amount of money!")
+            return
+        if bet < 10:
+            await ctx.send(f"{ctx.author.mention} You can't bet ${bet:,.2f}! The minimum bet is **$10**")
+            return
+        userInfo = self.Database.GetFromTable("Users", f"ID = {ctx.author.id}")
+        userMoney = BotUtils.parseMoney(userInfo[0][3])
+        if bet > userMoney:
+            await ctx.send(f"{ctx.author.mention} You don't have enough money for that! <:peepoCry:617113235459407894>")
+            return
+        else:
+            faces = ["heads", "tails"]
+            toss = choice(faces)
+            if toss == side.lower():
+                multiplier = 0.5
+                newBet = bet * multiplier
+                description = f"You won **${bet + newBet:,.2f}** <:peepoJackpot:618839207418396682>"
+            else:
+                multiplier = -1
+                newBet = bet * multiplier
+                description = f"You lost **${bet:,.2f}** <:peepoCry:617113235459407894>"
+            dbQuery = f"UPDATE Users SET credits = {userMoney + newBet} WHERE ID = {ctx.author.id};"
+            if self.Database.CommitCommand(dbQuery):
+                coinEmbed = discord.Embed(
+                    title = "Coin toss!",
+                    description = f"You chose **{side.lower()}** and got **{toss}**\n{description}",
+                    color = 0x9430FF
+                )
+                coinEmbed.set_image(url=Economy.Coins.get(toss))
+                await ctx.send(embed=coinEmbed)
+            else:
+                await ctx.send("Something went wrong and I couldn't update your credits! Try again later... <:peepoCry:617113235459407894>")
+
+    @gamble.group(pass_context=True, help="<bet>", usage="gamble slots $1000", description="Gambling slot machine!\nJackpot = 10x bet\n3 symbols = 2x bet\n2 symbols = 1.2x bet")
     @commands.cooldown(rate=1, per=3.0, type=commands.BucketType.channel)
     async def slots(self, ctx: commands.Context, bet: str):
         try:
@@ -205,7 +257,7 @@ class Economy(commands.Cog):
             await ctx.send(f"{ctx.author.mention} That's not a valid amount of money!")
             return
         if bet < 10:
-            await ctx.send(f"{ctx.author.mention} You can't bet ${bet:,.2f}! The minimum bet is $10")
+            await ctx.send(f"{ctx.author.mention} You can't bet ${bet:,.2f}! The minimum bet is **$10**")
             return
         userInfo = self.Database.GetFromTable("Users", f"ID = {ctx.author.id}")
         userMoney = BotUtils.parseMoney(userInfo[0][3])
@@ -213,7 +265,7 @@ class Economy(commands.Cog):
             await ctx.send(f"{ctx.author.mention} You don't have enough money for that! <:peepoCry:617113235459407894>")
             return
         else:
-            slots = ["<:peepoWeird:617447776036454436>", "<:peepoCrying:617447775147261952>", "<:peepoSweat:617447775537201164>", "<:peepoLove:618828609569816597>", "<:peepoHappy:617113235828637721>", "<:peepoBlush:617113235489030144>", "<:peepoCry:617113235459407894>", "<:peepoMad:617113238328442958>"]
+            slots = ["<:peepoCrying:617447775147261952>", "<:peepoSweat:617447775537201164>", "<:peepoLove:618828609569816597>", "<:peepoHappy:617113235828637721>", "<:peepoBlush:617113235489030144>", "<:peepoCry:617113235459407894>"]
             slotsMachine = discord.Embed(
                 title = "SLOTS MACHINE",
                 description = "**- Starting slots machine -**",

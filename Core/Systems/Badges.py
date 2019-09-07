@@ -4,4 +4,4 @@
 
 class Badges():
     OWNER = "<a:BADGE_Owner:618828215095525377>"
-    BETA = "<a:BADGE_beta:618903106943451136>"
+    BETA = "<a:BADGE_Beta:619674712221417493>"
