@@ -63,7 +63,7 @@ class Bot(commands.Bot):
             # This happens if Heeto fails to add user to database (Usually because user is already in the db).
             # If that happens then just add the Server ID to the user entry
             query = f'''
-                UPDATE Users SET Servers = array_append(Servers, {guild.id}) WHERE ID = {user.id};
+                UPDATE Users SET Servers = array_append(Servers, {guild.id}) (WHERE ID = {user.id} AND NOT {guild.id} = any(Servers));
             '''
             self.Database.CommitCommand(query)
     
