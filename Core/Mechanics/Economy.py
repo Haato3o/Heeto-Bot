@@ -198,9 +198,7 @@ class Economy(commands.Cog):
     @commands.group(pass_context=True, help="<subcommand> <subcommand params>", usage="gamble", description="Shows available gambling games!", aliases=["gambling"])
     async def gamble(self, ctx: commands.Context):
         if ctx.invoked_subcommand == None:
-            await ctx.send(f'''
-            {ctx.author.mention} You need to specify which gamble game you want to play and how much money you want to bet! <:peepoCry:617113235459407894>
-            Available games:
+            await ctx.send(f'''{ctx.author.mention} You need to specify which gamble game you want to play and how much money you want to bet! <:peepoCry:617113235459407894>\nAvailable games:
             ```\n~gamble slots\n~gamble coin```
             ''')
     
@@ -212,6 +210,9 @@ class Economy(commands.Cog):
         if side.lower() not in ["heads", "tails"]:
             await ctx.send(f"Command usage:\n~gamble coin <heads or tails> <bet>")
             return
+        userInfo = self.Database.GetFromTable("Users", f"ID = {ctx.author.id}")
+        if bet.lower() == "all":
+            bet = userInfo[0][3]
         try:
             bet = BotUtils.parseMoney(bet)
         except:
@@ -220,7 +221,6 @@ class Economy(commands.Cog):
         if bet < 10:
             await ctx.send(f"{ctx.author.mention} You can't bet ${bet:,.2f}! The minimum bet is **$10**")
             return
-        userInfo = self.Database.GetFromTable("Users", f"ID = {ctx.author.id}")
         userMoney = BotUtils.parseMoney(userInfo[0][3])
         if bet > userMoney:
             await ctx.send(f"{ctx.author.mention} You don't have enough money for that! <:peepoCry:617113235459407894>")
@@ -251,6 +251,9 @@ class Economy(commands.Cog):
     @gamble.group(pass_context=True, help="<bet>", usage="gamble slots $1000", description="Gambling slot machine!\nJackpot = 10x bet\n3 symbols = 2x bet\n2 symbols = 1.2x bet")
     @commands.cooldown(rate=1, per=3.0, type=commands.BucketType.channel)
     async def slots(self, ctx: commands.Context, bet: str):
+        userInfo = self.Database.GetFromTable("Users", f"ID = {ctx.author.id}")
+        if bet.lower() == "all":
+            bet = userInfo[0][3]
         try:
             bet = BotUtils.parseMoney(bet)
         except:
@@ -259,7 +262,6 @@ class Economy(commands.Cog):
         if bet < 10:
             await ctx.send(f"{ctx.author.mention} You can't bet ${bet:,.2f}! The minimum bet is **$10**")
             return
-        userInfo = self.Database.GetFromTable("Users", f"ID = {ctx.author.id}")
         userMoney = BotUtils.parseMoney(userInfo[0][3])
         if bet > userMoney:
             await ctx.send(f"{ctx.author.mention} You don't have enough money for that! <:peepoCry:617113235459407894>")
