@@ -281,8 +281,8 @@ class Economy(commands.Cog):
             for simSlots in range(3):
                 simulated = Gamble.SimulateSlots(slots, 3)
                 if simSlots == 2:
-                    jackpot_rng = randint(0, 1000)
-                    if jackpot_rng == 1:
+                    jackpot_rng = randint(1, 1000)
+                    if jackpot_rng <= 5:
                         simulated = ["<:peepoJackpot:618839207418396682>", "<:peepoJackpot:618839207418396682>", "<:peepoJackpot:618839207418396682>"]
                 slotsMachine.description = f"{' | '.join(simulated)}"
                 await slotsMachineMessage.edit(embed=slotsMachine)
