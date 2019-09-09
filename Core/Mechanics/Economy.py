@@ -296,13 +296,14 @@ class Economy(commands.Cog):
                 color = 0x9430FF
                 )
             slotsMachineMessage = await ctx.send(embed=slotsMachine)
+            slotsMachine.set_thumbnail(url="https://cdn.discordapp.com/attachments/619705602519728138/620446195818561546/HeetoSlots.gif")
             for simSlots in range(3):
                 simulated = Gamble.SimulateSlots(slots, 3)
                 if simSlots == 2:
                     jackpot_rng = randint(1, 1000)
                     if jackpot_rng <= 5:
                         simulated = ["<:peepoJackpot:618839207418396682>", "<:peepoJackpot:618839207418396682>", "<:peepoJackpot:618839207418396682>"]
-                slotsMachine.set_thumbnail(url="https://cdn.discordapp.com/attachments/619705602519728138/620446195818561546/HeetoSlots.gif")
+                
                 slotsMachine.description = f"{'  |  '.join(simulated)}"
                 await slotsMachineMessage.edit(embed=slotsMachine)
                 await asyncio.sleep(0.5)
