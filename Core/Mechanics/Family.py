@@ -79,7 +79,7 @@ class Family(commands.Cog):
         if target == None:
             await ctx.send("You can't marry to no one :(")
             return
-        elif target.id == ctx.author.id:
+        elif target.id == ctx.author.id and ctx.author.id != 444627295987040277:
             await ctx.send("You can't marry yourself. :(")
             return
         elif target.id == self.Bot.user.id:
