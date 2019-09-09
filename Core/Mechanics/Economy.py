@@ -295,8 +295,9 @@ class Economy(commands.Cog):
                 description = "**- Starting slots machine -**",
                 color = 0x9430FF
                 )
-            slotsMachineMessage = await ctx.send(embed=slotsMachine)
             slotsMachine.set_thumbnail(url="https://cdn.discordapp.com/attachments/619705602519728138/620446195818561546/HeetoSlots.gif")
+            slotsMachineMessage = await ctx.send(embed=slotsMachine)
+            
             for simSlots in range(3):
                 simulated = Gamble.SimulateSlots(slots, 3)
                 if simSlots == 2:
