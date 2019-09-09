@@ -34,7 +34,29 @@ class Economy(commands.Cog):
         3 : 500,
         4 : 600,
         5 : 700,
-        6 : 1000
+        6 : 1000,
+        7 : 1200,
+        8 : 1300,
+        9 : 1400,
+        10: 1500,
+        11: 1600,
+        12: 1700,
+        13: 1800,
+        14: 1900,
+        15: 2000,
+        16: 2100,
+        17: 2200,
+        18: 2300,
+        19: 2400,
+        20: 2500,
+        21: 2500,
+        22: 2500,
+        23: 2500,
+        24: 2500,
+        25: 2500,
+        26: 2500,
+        27: 2500,
+        29: 2500,
     }
 
     def __init__(self, bot):
@@ -111,12 +133,8 @@ class Economy(commands.Cog):
                 userMoney -= amount
                 targetQueryMoney += amount
                 # Gives target $amount
-                queries = [
-                    f"UPDATE Users SET credits = {userMoney} WHERE id = {ctx.author.id};",
-                    f"UPDATE Users SET credits = {targetQueryMoney} WHERE id = {to_user.id};"
-                ]
-                for query in queries:
-                    self.Database.CommitCommand(query)
+                self.Database.GiveUserMoney(ctx.author.id, userMoney)
+                self.Database.GiveUserMoney(to_user.id, targetQueryMoney)
                 transactionEmbed = discord.Embed(
                     title = f"Transaction {ctx.author} => {to_user}",
                     timestamp = datetime.now(),
@@ -179,7 +197,7 @@ class Economy(commands.Cog):
         userCredits = BotUtils.parseMoney(dbQuery[0][3])
         if lastClaim.days > 0:
             streak = streak if lastClaim.days == 1 else 0
-            if streak < 7:
+            if streak < len(Economy.DailyStreak):
                 dailyCredit = Economy.DailyStreak.get(streak)
                 newStreak = streak + 1 if streak < (len(Economy.DailyStreak) - 1) else 0
                 query = f'''
@@ -240,8 +258,8 @@ class Economy(commands.Cog):
                 multiplier = -1
                 newBet = bet * multiplier
                 description = f"You lost **${bet:,.2f}** <:peepoCry:617113235459407894>"
-            dbQuery = f"UPDATE Users SET credits = {userMoney + newBet} WHERE ID = {ctx.author.id};"
-            if self.Database.CommitCommand(dbQuery):
+            newAmount = userMoney + newBet
+            if self.Database.GiveUserMoney(ctx.author.id, newAmount):
                 coinEmbed = discord.Embed(
                     title = "Coin toss!",
                     description = f"You chose **{side.lower()}** and got **{toss}**\n{description}",
@@ -284,31 +302,33 @@ class Economy(commands.Cog):
                     jackpot_rng = randint(1, 1000)
                     if jackpot_rng <= 5:
                         simulated = ["<:peepoJackpot:618839207418396682>", "<:peepoJackpot:618839207418396682>", "<:peepoJackpot:618839207418396682>"]
-                slotsMachine.description = f"{' | '.join(simulated)}"
+                slotsMachine.set_thumbnail(url="https://cdn.discordapp.com/attachments/619705602519728138/620446195818561546/HeetoSlots.gif")
+                slotsMachine.description = f"{'  |  '.join(simulated)}"
                 await slotsMachineMessage.edit(embed=slotsMachine)
                 await asyncio.sleep(0.5)
 
-            # If all slots are equal, @user gets 2x the bet
+            
             if Gamble.slotsOutput(simulated) == 1:
                 if simulated[0] == "<:peepoJackpot:618839207418396682>":
                     newBet = bet * 10
-                    slotsMachine.add_field(name="**Results**", value=f"DING DING DING! Jackpot! You just won 10x your bet! Added ${bet + newBet:,.2f} to your balance! <:peepoJackpot:618839207418396682>")
-                else:  
+                    slotsMachine.add_field(name="**Results**", value=f"DING DING DING! Jackpot! You just won 10x your bet! Added **${bet + newBet:,.2f}** to your balance! <:peepoJackpot:618839207418396682>")
+                else:
+                    # If all slots are equal, @user gets 2x the bet
                     newBet = bet * 2
-                    slotsMachine.add_field(name="**Results**", value=f"YOU WON ${bet + newBet:,.2f}! <:peepoHappy:617113235828637721>")
-            # If 2 slots are equal and 1 is different, 1.5x the bet
+                    slotsMachine.add_field(name="**Results**", value=f"YOU WON **${bet + newBet:,.2f}!** <:peepoHappy:617113235828637721>")
+            # If 2 slots are equal and 1 is different, 1.2x the bet
             elif Gamble.slotsOutput(simulated) == 2:
                 newBet = bet * 1.2
-                slotsMachine.add_field(name="**Results**", value=f"YOU WON ${bet + newBet:,.2f}! <:peepoHappy:617113235828637721>")
+                slotsMachine.add_field(name="**Results**", value=f"YOU WON **${bet + newBet:,.2f}!** <:peepoHappy:617113235828637721>")
             # If all slots are different, @user loses money pepeHands
             else:
-                slotsMachine.add_field(name="**Results**", value=f"YOU LOST ${bet:,.2f}! <:peepoCrying:617447775147261952>")
+                slotsMachine.add_field(name="**Results**", value=f"YOU LOST **${bet:,.2f}!** <:peepoCrying:617447775147261952>")
                 newBet = bet * (-1)
-            dbQuery = f"UPDATE Users SET credits = {userMoney + newBet} WHERE ID = {ctx.author.id};"
-            if self.Database.CommitCommand(dbQuery):
+            newAmount = userMoney + newBet
+            if self.Database.GiveUserMoney(ctx.author.id, newAmount):
                 await slotsMachineMessage.edit(embed=slotsMachine)
             else:
-                slotsMachine.add_field(name="**Results**", value=f"Whoops, something went wrong! You didn't lose credits, so don't worry. Try gambling again later <:peepoCrying:617447775147261952>")
+                slotsMachine.add_field(name="**Whoops**", value=f"Whoops, something went wrong! You didn't lose credits, so don't worry. Try gambling again later <:peepoCrying:617447775147261952>")
                 await slotsMachineMessage.edit(embed=slotsMachine)
 
 def setup(bot):

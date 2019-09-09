@@ -9,6 +9,7 @@ from dotenv import load_dotenv
 from Core.Logger import Logger
 
 class Database():
+    MAX_MONEY = 92233720368547758.06
     def __init__(self, username: str, password: str, host: str, port: str, db_name: str):
         '''
             Creates a PostgreSQL database connection
@@ -161,3 +162,18 @@ class Database():
             self.Connection.close()
             Logger.Log("Connection to database closed!")
             self.Connection = None
+
+    # Heeto bot functions
+    def GiveUserMoney(self, user_id: int, new_amount: float):
+        query = "UPDATE Users SET Credits = %s WHERE ID = %s;"
+        if new_amount > Database.MAX_MONEY:
+            new_amount = Database.MAX_MONEY
+        try:
+            self.Cursor.execute(query, (new_amount, user_id))
+            self.Connection.commit()
+            Logger.Log(f"Updated user {user_id} credits to {new_amount}")
+            return True
+        except Exception as err:
+            Logger.Log(err)
+            self.Cursor.execute('rollback;')
+            return False
