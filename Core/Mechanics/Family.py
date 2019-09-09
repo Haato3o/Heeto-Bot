@@ -13,6 +13,7 @@ from Libs.utils.bot_utils import BotUtils
 load_dotenv('.env')
 
 class Family(commands.Cog):
+    MarrySelfExceptions = [444627295987040277]
     name = "family"
     description = '''
         This group has all commands related to the family and marriage systems.
@@ -77,10 +78,10 @@ class Family(commands.Cog):
             await ctx.send(f"{ctx.author.mention} That's not a valid user!")
             return
         if target == None:
-            await ctx.send("You can't marry to no one :(")
+            await ctx.send("You can't marry to no one <:peepoWeird:617447776036454436>")
             return
-        elif target.id == ctx.author.id and ctx.author.id != 444627295987040277:
-            await ctx.send("You can't marry yourself. :(")
+        elif target.id == ctx.author.id and ctx.author.id not in Family.MarrySelfExceptions:
+            await ctx.send("Why would u marry yourself? Are you that desperate? <:peepoWeird:617447776036454436>")
             return
         elif target.id == self.Bot.user.id:
             quotes = [
