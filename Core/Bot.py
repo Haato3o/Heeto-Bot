@@ -16,7 +16,7 @@ load_dotenv(".env")
 
 class Bot(commands.Bot):
     def __init__(self, prefix: str, status_message: str):
-        super().__init__(command_prefix=prefix)
+        super().__init__(command_prefix=self.GetGuildPrefix)
         self.remove_command("help")
         self.add_cog(Commands(self))
         self.statusMessage = status_message
@@ -28,7 +28,11 @@ class Bot(commands.Bot):
             db_name = os.getenv("DATABASE_NAME")
         )
         self.Database.connect()
-        
+
+    def GetGuildPrefix(self, bot, message):
+        GuildDB = self.Database.GetFromTable("Guilds", f"ID = {message.guild.id}")
+        GuildCustomPrefix = GuildDB[0][3] if len(GuildDB) > 0 else "~"
+        return GuildCustomPrefix
 
     async def on_member_join(self, member: discord.Member):
         '''
@@ -97,6 +101,7 @@ class Bot(commands.Bot):
         await self.change_presence(status=discord.Status.online, activity=Activity)
 
     async def on_message(self, message: discord.Message):
+
         # Ignore other bot messages
         if (message.author.bot):
             return
@@ -107,7 +112,8 @@ class Bot(commands.Bot):
                 "Guilds",
                 ID = message.guild.id,
                 OwnerId = message.guild.owner_id,
-                EnabledCommands = (True, True)
+                EnabledCommands = (True, True),
+                commands_prefix = "~"
             )
             if newGuild:
                 Logger.Log("Created new guild entry into the database.")

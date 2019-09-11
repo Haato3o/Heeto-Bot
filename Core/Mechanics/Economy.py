@@ -17,9 +17,7 @@ load_dotenv(".env")
 
 class Economy(commands.Cog):
     name = "economy"
-    description = '''
-        This group has all commands related to the economy. Including daily credits commands and money management commands and gambling.
-    '''
+    description = '''This group has all commands related to the economy. Including daily credits commands and money management commands and gambling.'''
     color = "#CD56FF"
 
     Coins = {
@@ -27,6 +25,8 @@ class Economy(commands.Cog):
         "heads" : "https://cdn.discordapp.com/attachments/619705602519728138/619705624430641152/badge_heetocoin.gif"
     }
 
+    # Hardcoded values for daily credits because I want to have control for the credits for each day. 
+    # That's why I don't use a formula to calculate it automatically
     DailyStreak = {
         0 : 250,
         1 : 300,
@@ -72,6 +72,13 @@ class Economy(commands.Cog):
         self.Database.connect()
 
     async def createConfirmation(self, message: discord.Message, emojis: list, user: discord.User) -> bool:
+        '''
+            Creates a confirmation message with a check mark and a X emote;
+            :params message: Discord message that will be listened and edited;
+            :params emojis: list with emotes that will be added to the message;
+            :params user: Discord user that needs to confirm
+            :return: True if user clicked on check mark, False if user clicked on X and None if time's up
+        '''
         def check(emote, usr):
             if (str(emote.emoji) == "✅" and usr == user):
                 return True

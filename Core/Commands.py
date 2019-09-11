@@ -23,17 +23,15 @@ class Commands(commands.Cog):
         if len(cogs) == 0:
             help_embed = discord.Embed(
                 title = "Help",
-                description = '''
-                    You can check all commands available [here](http://heetobot.com/commands).
-                    Type help <group> to read more about an specific command group.
-                    > **Note:** Groups and commands are case-sensitive.
-                    ''',
+                description = '''You can check all commands available [here](http://heetobot.com/commands).\nType help <group> to read more about an specific command group.\n> **Note:** Groups and commands are case-sensitive.''',
                 color = 0x9430FF
             )
-            help_embed.add_field(
-                name = "**Available command groups:**",
-                value = ", ".join(availableGroups)
-            )
+            for group in availableGroups:
+                help_embed.add_field(
+                    name = f"**{group}**",
+                    value = ", ".join([command.name for command in self.bot.cogs.get(group).get_commands()]),
+                    inline = False
+                )
             help_embed.set_thumbnail(url=self.bot.user.avatar_url)
             await ctx.send(embed=help_embed)
         else:
