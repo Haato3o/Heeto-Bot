@@ -14,16 +14,16 @@ class Commands(commands.Cog):
         Logger.Log("Basic commands loaded!")
         self.bot:commands.Bot = bot
         self.LoadAllCogs()
-        
 
     @commands.command(pass_context=True, help="<command group>", usage="help Level level ranking", description="Shows information about commands and command groups and how to use them.")
     async def help(self, ctx: commands.Context, *cogs):
+        prefix = self.bot.command_prefix(self.bot, ctx.message)
         availableGroups = list(self.bot.cogs.keys())
         availableGroups.remove("Admin")
         if len(cogs) == 0:
             help_embed = discord.Embed(
                 title = "Help",
-                description = '''You can check all commands available [here](http://heetobot.com/commands).\nType help <group> to read more about an specific command group.\n> **Note:** Groups and commands are case-sensitive.''',
+                description = f'''You can check all commands available [here](http://heetobot.com/commands).\nType {prefix}help <group> to read more about an specific command group.\n> **Note:** Groups and commands are case-sensitive.''',
                 color = 0x9430FF
             )
             for group in availableGroups:
@@ -41,7 +41,7 @@ class Commands(commands.Cog):
                 if len(cogs) < 2:
                     groupEmbed = discord.Embed(
                         title = f"{cogs[0]}",
-                        description = f"**Description: ** {groupChosen.description}\nType [prefix]help {cogs[0]} <command> to read more about an specific command.",
+                        description = f"**Description: ** {groupChosen.description}\nType {prefix}help {cogs[0]} <command> to read more about an specific command.",
                         color = BotUtils.parseColorFromString(groupChosen.color)
                     )
                     groupEmbed.set_footer(
@@ -81,7 +81,7 @@ class Commands(commands.Cog):
                         )
                         commandEmbed.add_field(
                             name = "**Usage**",
-                            value = commandChosen.usage,
+                            value = f"{prefix}{commandChosen.usage}",
                             inline = False
                         )
                         commandEmbed.add_field(
