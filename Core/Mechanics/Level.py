@@ -23,7 +23,7 @@ class Level(commands.Cog):
         The level group contains all commands related to the levelling and experience systems.
     '''
     color = "#6DF96D"
-    Experience_Cooldown = 60
+    Experience_Cooldown = 30
     ExpMultiplier = 2
     CalculateLevelFormula = lambda level: int((100 + (100 * level) * (level / 100)))
 
