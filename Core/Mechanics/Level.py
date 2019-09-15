@@ -24,6 +24,7 @@ class Level(commands.Cog):
     '''
     color = "#6DF96D"
     Experience_Cooldown = 60
+    ExpMultiplier = 2
     CalculateLevelFormula = lambda level: int((100 + (100 * level) * (level / 100)))
 
     def __init__(self, bot):
@@ -112,7 +113,7 @@ class Level(commands.Cog):
 
     @staticmethod
     def IncreaseUserExp(Database: Database, user: tuple, context: discord.Message):
-        exp = randint(3, 9)
+        exp = randint(3, 9) * Level.ExpMultiplier
         newExp = user[5] + exp
         query = f'''
             UPDATE Users SET experience = {newExp}, 
