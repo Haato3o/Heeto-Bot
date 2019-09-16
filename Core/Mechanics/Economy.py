@@ -104,7 +104,13 @@ class Economy(commands.Cog):
     @commands.group(pass_context=True, help="<subcommand params>", usage="money", description="A group of commands.")
     async def money(self, ctx: commands.Context):
         if ctx.invoked_subcommand == None:
-            await ctx.send("This is a placeholder btw, gonna change this later")
+            dbQuery = self.Database.GetFromTable("Users", f"ID = {ctx.author.id}")
+            currencyEmbed = discord.Embed(
+                title=f"{ctx.author.name}'s balance",
+                description=f"**Balance:** {dbQuery[0][3]}",
+                color=BotUtils.parseColorFromString(dbQuery[0][10])
+                )
+            await ctx.send(embed=currencyEmbed)
 
     @money.command(pass_context=True, help="<@user> <amount>", usage="money send @Haato#0704 $1000", description="Sends <@user> <amount> from your balance.")
     async def send(self, ctx: commands.Context, to_user = None, amount = None):
@@ -186,7 +192,7 @@ class Economy(commands.Cog):
         else:
             await ctx.send(f"{ctx.author.mention} You don't have that much money!")
 
-    @commands.command(pass_context=True, help="None", usage="balance", description="Shows your credits balance.")
+    @commands.command(pass_context=True, help="None", usage="balance", description="Shows your credits balance.", aliases=["bank"])
     async def balance(self, ctx: commands.Context):
         dbQuery = self.Database.GetFromTable("Users", f"ID = {ctx.author.id}")
         currencyEmbed = discord.Embed(
