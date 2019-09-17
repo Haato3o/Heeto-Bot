@@ -309,42 +309,51 @@ class Economy(commands.Cog):
                 color = 0x9430FF
                 )
             slotsMachine.set_thumbnail(url="https://cdn.discordapp.com/attachments/619705602519728138/620446195818561546/HeetoSlots.gif")
+            slotsMachine.add_field(
+                name = "**Results**",
+                value = "- - -"
+            )
             slotsMachineMessage = await ctx.send(embed=slotsMachine)
-            
             for simSlots in range(3):
                 simulated = Gamble.SimulateSlots(slots, 3)
                 if simSlots == 2:
                     jackpot_rng = randint(1, 1000)
                     if jackpot_rng <= 5:
                         simulated = ["<:peepoJackpot:618839207418396682>", "<:peepoJackpot:618839207418396682>", "<:peepoJackpot:618839207418396682>"]
-                
-                slotsMachine.description = f"{'  |  '.join(simulated)}"
-                await slotsMachineMessage.edit(embed=slotsMachine)
-                await asyncio.sleep(0.5)
+                    slotsMachine.description = f"{'  |  '.join(simulated)}"
+                    break
+                else:
+                    slotsMachine.description = f"{'  |  '.join(simulated)}"
+                    await slotsMachineMessage.edit(embed=slotsMachine)
+                    await asyncio.sleep(0.5)
 
-            
+            slotsMachineField = slotsMachine.fields[0]
             if Gamble.slotsOutput(simulated) == 1:
                 if simulated[0] == "<:peepoJackpot:618839207418396682>":
                     newBet = bet * 8
-                    slotsMachine.add_field(name="**Results**", value=f"DING DING DING! Jackpot! You just won 10x your bet! Added **${bet + newBet:,.2f}** to your balance! <:peepoJackpot:618839207418396682>")
+                    slotsMachineField.value = f"DING DING DING! Jackpot! You just won 10x your bet! Added **${bet + newBet:,.2f}** to your balance! <:peepoJackpot:618839207418396682>"
                 else:
                     # If all slots are equal, @user gets 2x the bet
                     newBet = bet * 1.5
-                    slotsMachine.add_field(name="**Results**", value=f"YOU WON **${bet + newBet:,.2f}!** <:peepoHappy:617113235828637721>")
+                    slotsMachineField.value = f"YOU WON **${bet + newBet:,.2f}!** <:peepoHappy:617113235828637721>"
             # If 2 slots are equal and 1 is different, 1.2x the bet
             elif Gamble.slotsOutput(simulated) == 2:
                 newBet = bet * 0.9
-                slotsMachine.add_field(name="**Results**", value=f"YOU WON **${bet + newBet:,.2f}!** <:peepoHappy:617113235828637721>")
+                slotsMachineField.value = f"YOU WON **${bet + newBet:,.2f}!** <:peepoHappy:617113235828637721>"
             # If all slots are different, @user loses money pepeHands
             else:
-                slotsMachine.add_field(name="**Results**", value=f"YOU LOST **${bet:,.2f}!** <:peepoCrying:617447775147261952>")
+                slotsMachineField.value = f"YOU LOST **${bet:,.2f}!** <:peepoCrying:617447775147261952>"
                 newBet = bet * (-1)
             newAmount = userMoney + newBet
+            slotsMachine.clear_fields()
+            slotsMachine.add_field(
+                name = slotsMachineField.name,
+                value = slotsMachineField.value
+            )
             if self.Database.GiveUserMoney(ctx.author.id, newAmount):
                 await slotsMachineMessage.edit(embed=slotsMachine)
             else:
                 slotsMachine.add_field(name="**Whoops**", value=f"Whoops, something went wrong! You didn't lose credits, so don't worry. Try gambling again later <:peepoCrying:617447775147261952>")
                 await slotsMachineMessage.edit(embed=slotsMachine)
-
 def setup(bot):
     bot.add_cog(Economy(bot))
