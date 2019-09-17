@@ -325,15 +325,15 @@ class Economy(commands.Cog):
             
             if Gamble.slotsOutput(simulated) == 1:
                 if simulated[0] == "<:peepoJackpot:618839207418396682>":
-                    newBet = bet * 10
+                    newBet = bet * 8
                     slotsMachine.add_field(name="**Results**", value=f"DING DING DING! Jackpot! You just won 10x your bet! Added **${bet + newBet:,.2f}** to your balance! <:peepoJackpot:618839207418396682>")
                 else:
                     # If all slots are equal, @user gets 2x the bet
-                    newBet = bet * 2
+                    newBet = bet * 1.5
                     slotsMachine.add_field(name="**Results**", value=f"YOU WON **${bet + newBet:,.2f}!** <:peepoHappy:617113235828637721>")
             # If 2 slots are equal and 1 is different, 1.2x the bet
             elif Gamble.slotsOutput(simulated) == 2:
-                newBet = bet * 1.2
+                newBet = bet * 0.9
                 slotsMachine.add_field(name="**Results**", value=f"YOU WON **${bet + newBet:,.2f}!** <:peepoHappy:617113235828637721>")
             # If all slots are different, @user loses money pepeHands
             else:
