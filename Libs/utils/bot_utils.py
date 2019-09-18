@@ -8,7 +8,7 @@ class BotUtils():
         if (is_gif):
             return f"https://cdn.discordapp.com/avatars/{user_id}/{avatar_hash}.gif"
         else:
-            f"https://cdn.discordapp.com/avatars/{user_id}/{avatar_hash}.webp"
+            return f"https://cdn.discordapp.com/avatars/{user_id}/{avatar_hash}.webp"
 
     @staticmethod
     def formatCommandsDict(bot_prefix: str, commands_dict: dict) -> str:

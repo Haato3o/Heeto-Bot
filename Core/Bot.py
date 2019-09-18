@@ -66,7 +66,7 @@ class Bot(commands.Bot):
                     description = "You can change your user card [here](https://heetobot.com)",
                     cardColor = "#FFFFFF",
                     discriminator = user.discriminator,
-                    avatar = str(user.avatar_url).replace("webp?size=1024", "png"),
+                    avatar =  BotUtils.parseUserProfilePicture(user.is_avatar_animated(), user.id, user.avatar),
                     married_to = None,
                     Badges = []
                 )
