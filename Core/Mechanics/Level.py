@@ -79,7 +79,7 @@ class Level(commands.Cog):
                 value = "No one." if userQuery[0][13] == None else self.Bot.get_user(userQuery[0][13])
             )
             userLevelEmbed.set_thumbnail(
-                url = f"https://cdn.discordapp.com/avatars/{user.id}/{user.avatar}.webp"
+                url = BotUtils.parseUserProfilePicture(user.is_avatar_animated(), user.id, user.avatar)
             )
             await ctx.send(embed=userLevelEmbed)
 

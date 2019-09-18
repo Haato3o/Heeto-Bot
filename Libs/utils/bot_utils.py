@@ -4,6 +4,13 @@ import random
 
 class BotUtils():
     @staticmethod
+    def parseUserProfilePicture(is_gif: bool, user_id: str, avatar_hash: str):
+        if (is_gif):
+            return f"https://cdn.discordapp.com/avatars/{user_id}/{avatar_hash}.gif"
+        else:
+            f"https://cdn.discordapp.com/avatars/{user_id}/{avatar_hash}.webp"
+
+    @staticmethod
     def formatCommandsDict(bot_prefix: str, commands_dict: dict) -> str:
         '''
             Formats dict into a readable block of text for the help embed command
