@@ -46,11 +46,12 @@ class Level(commands.Cog):
     @commands.group(pass_context=True, help="<@user>*", usage="level @Haato#0704", description="Shows <user> user card. It'll show your own card if user is not specified.", aliases=["profile"])
     async def level(self, ctx: commands.Context):
         if ctx.invoked_subcommand == None:
-            user = ctx.message.mentions[0] if len(ctx.message.mentions) > 0 else ctx.author
+            user: discord.User = ctx.message.mentions[0] if len(ctx.message.mentions) > 0 else ctx.author
             userQuery = self.Database.GetFromTable(
                 "Users",
                 f"ID = {user.id}"
             )
+            
             userDescription = userQuery[0][9]
             userColor = BotUtils.parseColorFromString(userQuery[0][10])
             userLevelEmbed = discord.Embed(
@@ -78,7 +79,7 @@ class Level(commands.Cog):
                 value = "No one." if userQuery[0][13] == None else self.Bot.get_user(userQuery[0][13])
             )
             userLevelEmbed.set_thumbnail(
-                url = user.avatar_url
+                url = f"https://cdn.discordapp.com/avatars/{user.id}/{user.avatar}.webp"
             )
             await ctx.send(embed=userLevelEmbed)
 
