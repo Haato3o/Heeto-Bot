@@ -229,7 +229,7 @@ class Economy(commands.Cog):
         if bet.lower() == "all":
             bet = Economy.MaxBet
         try:
-            bet = BotUtils.parseMoney(bet)
+            bet = BotUtils.parseMoney(str(bet))
         except:
             await ctx.send(f"{ctx.author.mention} That's not a valid amount of money!")
             return
@@ -273,7 +273,7 @@ class Economy(commands.Cog):
         if bet.lower() == "all":
             bet = Economy.MaxBet
         try:
-            bet = BotUtils.parseMoney(bet)
+            bet = BotUtils.parseMoney(str(bet))
         except:
             await ctx.send(f"{ctx.author.mention} That's not a valid amount of money!")
             return
