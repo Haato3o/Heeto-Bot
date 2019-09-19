@@ -25,38 +25,18 @@ class Economy(commands.Cog):
         "heads" : "https://cdn.discordapp.com/attachments/619705602519728138/619705624430641152/badge_heetocoin.gif"
     }
 
+    MaxBet = 800
+
     # Hardcoded values for daily credits because I want to have control for the credits for each day. 
     # That's why I don't use a formula to calculate it automatically
     DailyStreak = {
         0 : 250,
         1 : 300,
-        2 : 400,
-        3 : 500,
-        4 : 600,
-        5 : 700,
-        6 : 1000,
-        7 : 1200,
-        8 : 1300,
-        9 : 1400,
-        10: 1500,
-        11: 1600,
-        12: 1700,
-        13: 1800,
-        14: 1900,
-        15: 2000,
-        16: 2100,
-        17: 2200,
-        18: 2300,
-        19: 2400,
-        20: 2500,
-        21: 2500,
-        22: 2500,
-        23: 2500,
-        24: 2500,
-        25: 2500,
-        26: 2500,
-        27: 2500,
-        29: 2500,
+        2 : 350,
+        3 : 400,
+        4 : 450,
+        5 : 500,
+        6 : 550
     }
 
     def __init__(self, bot):
@@ -247,14 +227,17 @@ class Economy(commands.Cog):
             return
         userInfo = self.Database.GetFromTable("Users", f"ID = {ctx.author.id}")
         if bet.lower() == "all":
-            bet = userInfo[0][3]
+            bet = Economy.MaxBet
         try:
             bet = BotUtils.parseMoney(bet)
         except:
             await ctx.send(f"{ctx.author.mention} That's not a valid amount of money!")
             return
-        if bet < 10:
-            await ctx.send(f"{ctx.author.mention} You can't bet ${bet:,.2f}! The minimum bet is **$10**")
+        if bet < 1:
+            await ctx.send(f"{ctx.author.mention} You can't bet ${bet:,.2f}! The minimum bet is **$1**")
+            return
+        if bet > Economy.MaxBet:
+            await ctx.send(f"{ctx.author.mention} The max you can bet is **${Economy.MaxBet:,.2f}**! <:peepoCry:617113235459407894>")
             return
         userMoney = BotUtils.parseMoney(userInfo[0][3])
         if bet > userMoney:
@@ -264,7 +247,7 @@ class Economy(commands.Cog):
             faces = ["heads", "tails"]
             toss = choice(faces)
             if toss == side.lower():
-                multiplier = 0.5
+                multiplier = 1
                 newBet = bet * multiplier
                 description = f"You won **${bet + newBet:,.2f}** <:peepoJackpot:618839207418396682>"
             else:
@@ -283,19 +266,22 @@ class Economy(commands.Cog):
             else:
                 await ctx.send("Something went wrong and I couldn't update your credits! Try again later... <:peepoCry:617113235459407894>")
 
-    @gamble.group(pass_context=True, help="<bet>", usage="gamble slots $1000", description="Gambling slot machine!\nJackpot = 10x bet\n3 symbols = 2x bet\n2 symbols = 1.2x bet")
+    @gamble.group(pass_context=True, help="<bet>", usage="gamble slots $800", description="Gambling slot machine!\nJackpot = 10x bet\n3 symbols = 2x bet\n2 symbols = 1.2x bet")
     @commands.cooldown(rate=1, per=3.0, type=commands.BucketType.channel)
     async def slots(self, ctx: commands.Context, bet: str):
         userInfo = self.Database.GetFromTable("Users", f"ID = {ctx.author.id}")
         if bet.lower() == "all":
-            bet = userInfo[0][3]
+            bet = Economy.MaxBet
         try:
             bet = BotUtils.parseMoney(bet)
         except:
             await ctx.send(f"{ctx.author.mention} That's not a valid amount of money!")
             return
-        if bet < 10:
-            await ctx.send(f"{ctx.author.mention} You can't bet ${bet:,.2f}! The minimum bet is **$10**")
+        if bet < 1:
+            await ctx.send(f"{ctx.author.mention} You can't bet ${bet:,.2f}! The minimum bet is **$1**")
+            return
+        if bet > Economy.MaxBet:
+            await ctx.send(f"{ctx.author.mention} The max you can bet is **${Economy.MaxBet:,.2f}**! <:peepoCry:617113235459407894>")
             return
         userMoney = BotUtils.parseMoney(userInfo[0][3])
         if bet > userMoney:
@@ -330,15 +316,15 @@ class Economy(commands.Cog):
             slotsMachineField = slotsMachine.fields[0]
             if Gamble.slotsOutput(simulated) == 1:
                 if simulated[0] == "<:peepoJackpot:618839207418396682>":
-                    newBet = bet * 8
-                    slotsMachineField.value = f"DING DING DING! Jackpot! You just won 10x your bet! Added **${bet + newBet:,.2f}** to your balance! <:peepoJackpot:618839207418396682>"
+                    newBet = bet * 12
+                    slotsMachineField.value = f"DING DING DING! Jackpot! You just won 12x your bet! Added **${bet + newBet:,.2f}** to your balance! <:peepoJackpot:618839207418396682>"
                 else:
                     # If all slots are equal, @user gets 2x the bet
                     newBet = bet * 1.5
                     slotsMachineField.value = f"YOU WON **${bet + newBet:,.2f}!** <:peepoHappy:617113235828637721>"
             # If 2 slots are equal and 1 is different, 1.2x the bet
             elif Gamble.slotsOutput(simulated) == 2:
-                newBet = bet * 0.9
+                newBet = bet * 1.1
                 slotsMachineField.value = f"YOU WON **${bet + newBet:,.2f}!** <:peepoHappy:617113235828637721>"
             # If all slots are different, @user loses money pepeHands
             else:
