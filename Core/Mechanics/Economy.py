@@ -341,5 +341,6 @@ class Economy(commands.Cog):
             else:
                 slotsMachine.add_field(name="**Whoops**", value=f"Whoops, something went wrong! You didn't lose credits, so don't worry. Try gambling again later <:peepoCrying:617447775147261952>")
                 await slotsMachineMessage.edit(embed=slotsMachine)
+                
 def setup(bot):
     bot.add_cog(Economy(bot))
