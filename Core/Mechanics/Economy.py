@@ -186,7 +186,7 @@ class Economy(commands.Cog):
     async def daily(self, ctx: commands.Context):
         dbQuery = self.Database.GetFromTable("Users", f"ID = {ctx.author.id}")
         lastClaim = (datetime.date(datetime.now()) - dbQuery[0][6])
-        streak = dbQuery[0][7]
+        streak = dbQuery[0][7] if dbQuery[0][7] < len(Economy.DailyStreak) else 0
         userCredits = BotUtils.parseMoney(dbQuery[0][3])
         if lastClaim.days > 0:
             streak = streak if lastClaim.days == 1 else 0
