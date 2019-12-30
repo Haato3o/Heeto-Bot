@@ -282,7 +282,7 @@ class Economy(commands.Cog):
         if bet < 1:
             await ctx.send(f"{ctx.author.mention} You can't bet ${bet:,.2f}! The minimum bet is **$1**")
             return
-        if bet > Economy.MaxBet and bet.lower() != userMoney:
+        if bet > Economy.MaxBet and bet != userMoney:
             await ctx.send(f"{ctx.author.mention} The max you can bet is **${Economy.MaxBet:,.2f}**! <:peepoCry:617113235459407894>")
             return
         if bet > userMoney:
