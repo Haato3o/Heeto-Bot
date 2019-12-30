@@ -270,21 +270,21 @@ class Economy(commands.Cog):
     @commands.cooldown(rate=1, per=3.0, type=commands.BucketType.channel)
     async def slots(self, ctx: commands.Context, bet: str):
         userInfo = self.Database.GetFromTable("Users", f"ID = {ctx.author.id}")
+        userMoney = BotUtils.parseMoney(userInfo[0][3])
         try:
             if bet.lower() != "all":
                 bet = BotUtils.parseMoney(str(bet))
+            else:
+                bet = userMoney
         except:
             await ctx.send(f"{ctx.author.mention} That's not a valid amount of money!")
             return
         if bet < 1:
             await ctx.send(f"{ctx.author.mention} You can't bet ${bet:,.2f}! The minimum bet is **$1**")
             return
-        if bet > Economy.MaxBet and bet.lower() != "all":
+        if bet > Economy.MaxBet and bet.lower() != userMoney:
             await ctx.send(f"{ctx.author.mention} The max you can bet is **${Economy.MaxBet:,.2f}**! <:peepoCry:617113235459407894>")
             return
-        userMoney = BotUtils.parseMoney(userInfo[0][3])
-        if bet.lower() == "all":
-            bet = userMoney
         if bet > userMoney:
             await ctx.send(f"{ctx.author.mention} You don't have enough money for that! <:peepoCry:617113235459407894>")
             return
