@@ -87,7 +87,8 @@ class Bot(commands.Bot):
             "Guilds",
             ID = int(guild.id),
             OwnerID = int(guild.owner_id),
-            EnabledCommands = (True, True)
+            EnabledCommands = (True, True),
+            commands_prefix = "~"
         )
         for user in guild.members:
             # For each member in the server, creates an entry in Heeto's database
