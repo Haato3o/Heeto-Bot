@@ -32,7 +32,8 @@ class Bot(commands.Bot):
     def GetGuildPrefix(self, bot, message):
         GuildDB = self.Database.GetFromTable("Guilds", f"ID = {message.guild.id}")
         prefix = GuildDB[0][3]
-        GuildCustomPrefix = prefix if prefix != None or len(GuildDB) > 0 else "~"
+        prefix = prefix if prefix != None else "~"
+        GuildCustomPrefix = prefix if len(GuildDB) > 0 else "~"
         return GuildCustomPrefix
 
     async def on_member_join(self, member: discord.Member):
