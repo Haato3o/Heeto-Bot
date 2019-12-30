@@ -271,7 +271,8 @@ class Economy(commands.Cog):
     async def slots(self, ctx: commands.Context, bet: str):
         userInfo = self.Database.GetFromTable("Users", f"ID = {ctx.author.id}")
         try:
-            bet = BotUtils.parseMoney(str(bet))
+            if bet.lower() != "all":
+                bet = BotUtils.parseMoney(str(bet))
         except:
             await ctx.send(f"{ctx.author.mention} That's not a valid amount of money!")
             return
