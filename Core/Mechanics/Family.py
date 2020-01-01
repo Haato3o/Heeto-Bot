@@ -114,7 +114,7 @@ class Family(commands.Cog):
                     receiveMarriageRequest = await ctx.send(f"{target.mention} Do you want to marry {ctx.author.mention}?")
                     confirmationReceive = await self.createConfirmation(receiveMarriageRequest, ["✅", "❌"], target)
                     if confirmationReceive == False:
-                        await confirmationReceive.edit(content=f"{target.mention} denied {ctx.author.mention}'s proposal!")
+                        await receiveMarriageRequest.edit(content=f"{target.mention} denied {ctx.author.mention}'s proposal!")
                         return
                     elif confirmationReceive:
                         if self.marryUsers(ctx.author.id, target.id):

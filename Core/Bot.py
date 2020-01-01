@@ -65,7 +65,7 @@ class Bot(commands.Bot):
                     last_day_streak = datetime(1990, 1, 1).strftime("%m/%d/%Y"),
                     streak = 0,
                     last_message_epoch = int(time.time()),
-                    description = "You can change your user card [here](https://heetobot.com)",
+                    description = "You can change your user card [here](https://www.heetobot.com)",
                     cardColor = "#FFFFFF",
                     discriminator = user.discriminator,
                     avatar =  BotUtils.parseUserProfilePicture(user.is_avatar_animated(), user.id, user.avatar),
