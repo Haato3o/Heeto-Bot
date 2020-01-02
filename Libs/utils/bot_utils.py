@@ -25,6 +25,24 @@ class BotUtils():
         return "\n".join(helpDescription)
 
     @staticmethod
+    def __checkIfInHexRange__(value: int) -> int:
+        if value > 0xFF:
+            return 0xFF
+        elif value < 0:
+            return 0x0
+        else:
+            return value
+
+    @staticmethod
+    def parseColorFromRGB(color: str) -> str:
+        color = color.split('(')[1].split(',')
+        red = BotUtils.__checkIfInHexRange__(int(color[0]))
+        green = BotUtils.__checkIfInHexRange__(int(color[1]))
+        blue = BotUtils.__checkIfInHexRange__(int(color[2].replace(')', '')))
+        result = f"#{red:#04x}{green:#04x}{blue:#04x}".replace("0x", "")
+        return result
+
+    @staticmethod
     def parseColorFromString(color: str) -> int:
         color = color.strip("#")
         return int(color, 16)

@@ -9,8 +9,7 @@ class Admin(commands.Cog):
         Logger.Log("Admin loaded!")
         self.bot: commands.Bot = bot
         self.Owners: list = [
-            183067754784358400,
-            204361296114614272
+            183067754784358400
         ]
         self.AdminCommands = {
             "shutdown**": "Shuts the bot down.",

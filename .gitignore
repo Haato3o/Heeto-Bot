@@ -9,3 +9,6 @@ __pycache__
 
 # Heeto pot boi
 TODO.txt
+users.json
+guilds.json
+db.py

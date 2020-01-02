@@ -164,7 +164,7 @@ class Database():
             self.Connection = None
 
     # Heeto bot functions
-    def GiveUserMoney(self, user_id: int, new_amount: float):
+    def GiveUserMoney(self, user_id: int, new_amount: float) -> bool:
         query = "UPDATE Users SET Credits = %s WHERE ID = %s;"
         if new_amount > Database.MAX_MONEY:
             new_amount = Database.MAX_MONEY
@@ -172,6 +172,30 @@ class Database():
             self.Cursor.execute(query, (new_amount, user_id))
             self.Connection.commit()
             Logger.Log(f"Updated user {user_id} credits to {new_amount}")
+            return True
+        except Exception as err:
+            Logger.Log(err)
+            self.Cursor.execute('rollback;')
+            return False
+    
+    def UpdateUserDescription(self, user_id: int, new_description: str) -> bool:
+        query = "UPDATE Users SET description = %s WHERE ID = %s;"
+        try:
+            self.Cursor.execute(query, (new_description, user_id))
+            self.Connection.commit()
+            Logger.Log(f"Updated user {user_id} description.")
+            return True
+        except Exception as err:
+            Logger.Log(err)
+            self.Cursor.execute('rollback;')
+            return False
+
+    def UpdateUserColor(self, user_id: int, new_color: str) -> bool:
+        query = "UPDATE Users SET cardColor = %s WHERE ID = %s;"
+        try:
+            self.Cursor.execute(query, (new_color, user_id))
+            self.Connection.commit()
+            Logger.Log(f"Updated user {user_id} color")
             return True
         except Exception as err:
             Logger.Log(err)

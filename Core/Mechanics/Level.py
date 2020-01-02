@@ -83,6 +83,40 @@ class Level(commands.Cog):
             )
             await ctx.send(embed=userLevelEmbed)
 
+    @level.command(pass_context=True, help="<description>", usage="profile description Hello world!", description="Changes your user card description")
+    async def description(self, ctx: commands.Context, *, description: str):
+        if (description == "" or description == None):
+            await ctx.send("User description cannot be empty <:peepoMad:617113238328442958>")
+            return
+        if (self.Database.UpdateUserDescription(ctx.author.id, description)):
+            await ctx.send("User description updated! <:peepoHappy:617113235828637721>")
+        else:
+            await ctx.send("Whoops! Something went wrong and I couldn't update your description <:peepoCrying:617447775147261952>")
+
+    @level.command(pass_context=True, help="<color>", usage="profile level #FFFFFF", description="Changes user card color (supports HEX and RGB)")
+    async def color(self, ctx: commands.Context, *, color: str):
+        if (color == "" or color == None):
+            await ctx.send("Color can't be empty <:peepoMad:617113238328442958>")
+            return
+        if (color.startswith("(") or color.lower().startswith("rgb(")):
+            try:
+                color = BotUtils.parseColorFromRGB(color)
+            except Exception as err:
+                Logger.Log(err)
+                await ctx.send("Failed to parse RGB to hex, are you sure that's a valid color?")
+        if (color.startswith("#") and len(color) >= 7):
+            color = color[0:7]
+            Logger.Log(color)
+            if (self.Database.UpdateUserColor(ctx.author.id, color)):
+                colorEmbed = discord.Embed(
+                    title = f"Updated {ctx.author.name} color",
+                    description = f"New color: {color}",
+                    color = BotUtils.parseColorFromString(color)
+                )
+                await ctx.send(embed=colorEmbed)
+            else:
+                await ctx.send("Failed to update your profile color <:peepoCrying:617447775147261952>")
+
     @level.command(pass_context=True, help="<global or server>*", usage="level ranking global", description="Shows the people with highest level in server or globally.")
     async def ranking(self, ctx: commands.Context, rankingType: str = "server"):
         if rankingType not in ["server", "global"]:
