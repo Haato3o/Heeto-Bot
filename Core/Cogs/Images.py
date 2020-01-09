@@ -26,7 +26,7 @@ class Images(commands.Cog):
             try:
                 user: discord.User = await commands.MemberConverter().convert(ctx, user)
             except:
-                await ctx.send(f"{user} not found!")
+                await ctx.send(f"User `{user}`` not found!")
                 return
         ImageUrl = BotUtils.parseUserProfileToPNG(user.id, user.avatar)
         DownloadedImagePath = BotUtils.DownloadImage(ImageUrl, os.path.join(os.path.abspath("temp"), f"{user.avatar}.png"))
@@ -34,6 +34,8 @@ class Images(commands.Cog):
             SteppinImage = Steppin(DownloadedImagePath)
             outputPath = SteppinImage.ManipulateImage()
             await ctx.send(file=discord.File(outputPath, filename=f"steppin.png"))
+        else:
+            await ctx.send("Whoops! Something went wrong <:peepoCrying:617447775147261952>")
 
 def setup(bot):
     bot.add_cog(Images(bot))
