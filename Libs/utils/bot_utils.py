@@ -1,6 +1,7 @@
 from datetime import datetime
 import discord
 import random
+import requests
 
 class BotUtils():
     @staticmethod
@@ -9,6 +10,21 @@ class BotUtils():
             return f"https://cdn.discordapp.com/avatars/{user_id}/{avatar_hash}.gif"
         else:
             return f"https://cdn.discordapp.com/avatars/{user_id}/{avatar_hash}.webp"
+
+    @staticmethod
+    def parseUserProfileToPNG(user_id: str, avatar_hash: str) -> str:
+        return f"https://cdn.discordapp.com/avatars/{user_id}/{avatar_hash}.png"
+
+    @staticmethod
+    def DownloadImage(url: str, path: str) -> str:
+        try:
+            imgRequest = requests.request("GET", url)
+            with open(path, "wb") as output:
+                output.write(imgRequest.content)
+                output.close()
+            return path
+        except:
+            return None
 
     @staticmethod
     def formatCommandsDict(bot_prefix: str, commands_dict: dict) -> str:

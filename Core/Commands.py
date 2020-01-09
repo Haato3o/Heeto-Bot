@@ -109,7 +109,8 @@ class Commands(commands.Cog):
             "Core.Cogs.Admin",
             "Core.Cogs.SKWiki",
             "Core.Cogs.Misc",
-            "Core.Cogs.Tera"
+            "Core.Cogs.Tera",
+            "Core.Cogs.Images"
         ]
         for cog in Cogs:
             try:
