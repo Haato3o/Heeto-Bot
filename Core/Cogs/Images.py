@@ -17,7 +17,7 @@ class Images(commands.Cog):
         self.Bot: commands.Bot = Bot
 
     @commands.command(pass_context=True)
-    async def steppin(self, ctx: commands.Context, user: str = None):
+    async def steppin(self, ctx: commands.Context, *, user: str = None):
         # TODO: Support default discord profile pic
         if (user == None):
             # Uses the profile picture of the user who called the command

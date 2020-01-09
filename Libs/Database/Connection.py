@@ -29,7 +29,10 @@ class Database():
         self.Connection = None
         self.Cursor = None
 
-    def isConnected(self):
+    def isConnected(self) -> bool:
+        '''
+            Returns status of current connection
+        '''
         if self.Connection:
             return True
         else:
@@ -37,6 +40,15 @@ class Database():
             return False
 
     def DeleteFromTable(self, tableName: str, comp: str):
+        '''
+            Deletes element from an existing table
+            :param tableName: Table name
+            :param comp: Comparision to be made
+
+            e.g:
+                # Deletes all entries where ID is 123
+                DeleteFromTable("Users", "ID = 123")
+        '''
         query = f'''
             DELETE FROM {tableName} WHERE {comp};
         '''
@@ -47,10 +59,20 @@ class Database():
                 return True
             except Exception as err:
                 Logger.Log(err, Logger.ERROR)
-                self.Cursor.execute("rollback;")
+                self.Connection.rollback()
                 return False
 
     def GetFromTable(self, tableName: str, comp: str):
+        '''
+            Returns all table entries that has the comp
+            :param tableName: Table name
+            :param comp: Comparision to be made
+
+            e.g:
+                # Gets all entries where ID is 123
+                GetFromTable("Users", "ID = 123")
+        '''
+
         query = f'''
             SELECT * FROM {tableName} WHERE {comp};
         '''
@@ -60,7 +82,7 @@ class Database():
                 return self.Cursor.fetchall()
             except Exception as err:
                 Logger.Log(err, Logger.ERROR)
-                self.Cursor.execute("rollback;")
+                self.Connection.rollback()
 
     def CommitCommand(self, command: str):
         '''
@@ -75,7 +97,7 @@ class Database():
                 return True
             except Exception as err:
                 Logger.Log(err, Logger.ERROR)
-                self.Cursor.execute("rollback;")
+                self.Connection.rollback()
                 return False
 
     def AddToTable(self, tableName: str, **kwargs):
@@ -94,7 +116,7 @@ class Database():
                 return True
             except Exception as err:
                 Logger.Log(err, Logger.ERROR)
-                self.Cursor.execute("rollback;")
+                self.Connection.rollback()
                 return False
 
     def DeleteTable(self, tableName):
@@ -114,7 +136,7 @@ class Database():
                 return True
             except Exception as err:
                 Logger.Log(err, Logger.ERROR)
-                self.Cursor.execute("rollback;")
+                self.Connection.rollback()
                 return False
 
     def CreateNewTable(self, tableName: str, values: str):
@@ -135,7 +157,7 @@ class Database():
                 return True
             except Exception as err:
                 Logger.Log(err, Logger.ERROR)
-                self.Cursor.execute("rollback;")
+                self.Connection.rollback()
                 return False
 
     def connect(self):
@@ -165,6 +187,17 @@ class Database():
 
     # Heeto bot functions
     def GiveUserMoney(self, user_id: int, new_amount: float) -> bool:
+        '''
+            Updates the user's money
+            :param user_id: User to update
+            :param new_amount: New money amount
+
+            e.g:
+                # Updates user 123 to $500
+                GiveUserMoney(123, 500.0)
+
+            > Note: If new_amount is higher than MAX_AMOUNT, user's money will be updated to MAX_AMOUNT
+        '''
         query = "UPDATE Users SET Credits = %s WHERE ID = %s;"
         if new_amount > Database.MAX_MONEY:
             new_amount = Database.MAX_MONEY
