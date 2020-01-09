@@ -10,7 +10,7 @@ from Libs.utils.bot_utils import BotUtils
 class Images(commands.Cog):
     name = "images"
     description = '''This group has all images manipulation related commands.'''
-    color = 0x42BFF5
+    color = "#42BFF5"
 
     def __init__(self, Bot):
         Logger.Log("Images loaded!")
