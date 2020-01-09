@@ -113,6 +113,7 @@ class Commands(commands.Cog):
             "Core.Cogs.Images"
         ]
         for cog in Cogs:
+            self.bot.load_extension(cog)
             try:
                 self.bot.load_extension(cog)
             except Exception as err:
