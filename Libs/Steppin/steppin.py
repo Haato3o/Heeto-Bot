@@ -9,7 +9,7 @@ class Steppin(object):
     def __init__(self, img_path: str):
         self.img_path: str = img_path
         self.img_bytes: Image.Image = None
-        self.steppin_watermark: Image.Image = Image.open(os.path.abspath("Libs\\Steppin\\images\\steppin_watermark.png"))
+        self.steppin_watermark: Image.Image = Image.open(os.path.join(os.path.abspath(""), "Libs", "Steppin", "images", "steppin_watermark.png"))
 
     def OpenImage(self):
         '''
@@ -35,7 +35,7 @@ class Steppin(object):
         '''
         # TODO: Enhance the way to save the output, so Heeto Bot doesn't have to remake the image if there's already one made
         outputName = f"{hex(random.randint(1, 2**32))}.png"
-        outputPath = os.path.abspath('temp') + f"\\{outputName}"
+        outputPath = os.path.join(os.path.abspath('temp'), f"{outputName}")
         self.img_bytes.save(outputPath)
         return outputPath
     

@@ -29,7 +29,7 @@ class Images(commands.Cog):
                 await ctx.send(f"{user} not found!")
                 return
         ImageUrl = BotUtils.parseUserProfileToPNG(user.id, user.avatar)
-        DownloadedImagePath = BotUtils.DownloadImage(ImageUrl, os.path.abspath("temp") + f"\\{user.avatar}.png")
+        DownloadedImagePath = BotUtils.DownloadImage(ImageUrl, os.path.join(os.path.abspath("temp"), f"{user.avatar}.png"))
         if (DownloadedImagePath != None):
             SteppinImage = Steppin(DownloadedImagePath)
             outputPath = SteppinImage.ManipulateImage()
