@@ -26,7 +26,7 @@ class Images(commands.Cog):
             try:
                 user: discord.User = await commands.MemberConverter().convert(ctx, user)
             except:
-                await ctx.send(f"User `{user}`` not found!")
+                await ctx.send(f"User `{user}` not found!")
                 return
         ImageUrl = BotUtils.parseUserProfileToPNG(user.id, user.avatar)
         DownloadedImagePath = BotUtils.DownloadImage(ImageUrl, os.path.join(os.path.abspath("temp"), f"{user.avatar}.png"))
