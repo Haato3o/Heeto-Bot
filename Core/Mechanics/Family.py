@@ -13,7 +13,7 @@ from Libs.utils.bot_utils import BotUtils
 load_dotenv('.env')
 
 class Family(commands.Cog):
-    MarrySelfExceptions = [444627295987040277]
+    MarrySelfExceptions = [444627295987040277, 229080753487609856]
     name = "family"
     description = '''
         This group has all commands related to the family and marriage systems.
