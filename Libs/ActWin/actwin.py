@@ -9,7 +9,7 @@ class ActWin(object):
     def __init__(self, img_path: str):
         self.img_path: str = img_path
         self.img_bytes: Image.Image = None
-        self.steppin_watermark: Image.Image = Image.open(os.path.join(os.path.abspath(""), "Libs", "Steppin", "images", "activate_windows.png"))
+        self.steppin_watermark: Image.Image = Image.open(os.path.join(os.path.abspath(""), "Libs", "ActWin", "images", "activate_windows.png"))
 
     def OpenImage(self):
         '''
