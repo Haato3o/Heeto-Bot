@@ -79,6 +79,13 @@ class Admin(commands.Cog):
                 Logger.Log(err, Logger.ERROR)
                 await ctx.send(f"Failed to send a message to `{channel_id}`")
 
+    @admin.command(pass_context=True, hidden=True)
+    async def message(self, ctx:commands.Context, user_id: int, *, message: str):
+        user_id:discord.User = self.bot.get_user(user_id)
+        try:
+            await user_id.send(message)
+        except:
+            await ctx.send("Failed to send message")
 
 def setup(bot):
     bot.add_cog(Admin(bot))
